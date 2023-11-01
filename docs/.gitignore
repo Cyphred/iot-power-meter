@@ -1,0 +1,6 @@
+# Drawio backup files
+*.drawio.bkp
+
+# Fritzing backup and cache files
+smart-power-meter-backups/
+fp-info-cache
