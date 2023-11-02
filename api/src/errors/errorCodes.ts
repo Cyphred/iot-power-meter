@@ -16,6 +16,14 @@ export class ErrorCode {
     "IOTPC0004",
     "JWT secret is not defined in local .env"
   );
+  static readonly MISSING_AUTHENTICATION_TOKEN = new ErrorCode(
+    "IOTPC0005",
+    "Authentication token not provided"
+  );
+  static readonly MISSING_DATA_FROM_JWT = new ErrorCode(
+    "IOTPC0006",
+    "Expected data missing from token"
+  );
 
   //to add, just increment the error code
 
