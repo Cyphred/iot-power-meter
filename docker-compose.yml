@@ -1,0 +1,45 @@
+version: "3.9"
+
+services:
+  mongodb:
+    container_name: iot_power_company_mongodb
+    image: mongo:latest
+    command: mongod --auth
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: mongodb
+      MONGO_INITDB_ROOT_PASSWORD: mongodb
+      MONGO_INITDB_DATABASE: mongodb
+      MONGODB_DATA_DIR: /data/db/main
+      MONGODB_LOG_DIR: /dev/null
+    volumes:
+      - ./data/main:/data/db
+    ports:
+      - 27017:27017
+    networks:
+      - mongodb
+
+  api:
+    container_name: iot_power_company_api
+    build: ./api
+    ports:
+      - 8000:8000
+    depends_on:
+      - mongodb
+    volumes:
+      - ./api:/app/api/
+    networks:
+      - mongodb
+
+  web:
+    container_name: iot_power_company_web
+    build: ./web
+    ports:
+      - 3000:3000
+    volumes:
+      - ./web:/app/web
+    depends_on:
+      - api
+
+networks:
+  mongodb:
+    driver: bridge
