@@ -2,6 +2,7 @@ import dotenv from "dotenv";
 import express from "express";
 import mongoose from "mongoose";
 import cors from "cors";
+import routes from "./routes.js";
 
 // Loads .env data
 dotenv.config();
@@ -32,7 +33,7 @@ app.use(
 );
 
 // Load in root router
-// app.use("/api", rootRouter);
+app.use("/api", routes);
 
 // Fetch port from .env or use default
 const port: number = process.env.PORT ? parseInt(process.env.PORT) : 8000;
