@@ -5,6 +5,7 @@ import ApiError from "../errors/apiError.js";
 import { ErrorCode } from "../errors/errorCodes.js";
 import createToken from "../common/createToken.js";
 import genericOkResponse from "../common/genericOkResponse.js";
+import PowerMeterReportModel from "../models/powerMeterReport.js";
 
 export async function generatePowerMeterToken(
   req: Request,
@@ -33,6 +34,29 @@ export async function generatePowerMeterToken(
     const token = createToken({ powerMeterId: meter._id });
 
     return genericOkResponse(res, { token });
+  } catch (err) {
+    next(err);
+  }
+}
+
+export async function createPowerMeterReport(
+  req: Request,
+  res: Response,
+  next: NextFunction
+) {
+  try {
+    const { reportStart, reportEnd, consumption, reportSeriesNumber } =
+      req.body;
+
+    await PowerMeterReportModel.create({
+      meter: req.meter._id,
+      reportStart,
+      reportEnd,
+      consumption,
+      reportSeriesNumber,
+    });
+
+    return genericOkResponse(res, null, "Report created");
   } catch (err) {
     next(err);
   }
