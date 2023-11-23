@@ -3,7 +3,7 @@ import { NextFunction, Request, Response } from "express";
 import ApiError from "../errors/apiError.js";
 import { ErrorCode } from "../errors/errorCodes.js";
 import jwt, { JwtPayload } from "jsonwebtoken";
-import PowerMeterModel from "../models/meter.js";
+import ConsumerModel from "../models/consumer.js";
 
 dotenv.config();
 
@@ -37,17 +37,17 @@ export default async function requireConsumer(
     // Verify token signature and extract payload
     const jwtPayload = jwt.verify(token, process.env.JWT_SECRET) as JwtPayload;
 
-    // Get power meter _id from payload
-    const { powerMeterId }: { powerMeterId: string } = jwtPayload;
+    // Get power consumer _id from payload
+    const { consumerId }: { consumerId: string } = jwtPayload;
 
-    // Reject if meter _id not in jwt payload
-    if (!powerMeterId) throw new ApiError(ErrorCode.MISSING_DATA_FROM_JWT);
+    // Reject if consumer _id not in jwt payload
+    if (!consumerId) throw new ApiError(ErrorCode.MISSING_DATA_FROM_JWT);
 
-    // Fetch meter data
-    const meter = await PowerMeterModel.findById(powerMeterId);
+    // Fetch consumer data
+    const consumer = await ConsumerModel.findById(consumerId);
 
-    // Include power meter data in the request
-    req.meter = meter;
+    // Include consumer data in the request
+    req.consumer = consumer;
     next();
   } catch (err) {
     next(err);
