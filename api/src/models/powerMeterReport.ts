@@ -44,6 +44,7 @@ const PowerMeterReportSchema: Schema<PowerMeterReportDocument> =
     reportSeriesNumber: {
       type: Number,
       required: true,
+      unique: true,
     },
   });
 
