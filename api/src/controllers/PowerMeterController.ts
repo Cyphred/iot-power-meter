@@ -7,18 +7,26 @@ import createToken from "../common/createToken.js";
 import genericOkResponse from "../common/genericOkResponse.js";
 import PowerMeterReportModel from "../models/powerMeterReport.js";
 
+/**
+ * Generates a token for validating data coming from a power meter.
+ * This is equivalent to a user logging in with a username/password.
+ */
 export async function generatePowerMeterToken(
   req: Request,
   res: Response,
   next: NextFunction
 ) {
   try {
+    // For a more logical understanding of what's going on here,
+    // think of the meterId as the `username` and the `secret` as the password.
     const { meterId, secret } = req.body;
+
+    // Prepare the error to throw in the event the meter secret is invalid.
     const invalidMeterSecretError = new ApiError(
       ErrorCode.INVALID_METER_SECRET
     );
 
-    // Fetch meter data
+    // Fetch meter data using id
     const meter = await PowerMeterModel.findById(meterId);
 
     // If provided meter _id does not match any record
@@ -39,14 +47,28 @@ export async function generatePowerMeterToken(
   }
 }
 
+/**
+ * Used by the power meters for creating a consumption report
+ * for a certain timeframe.
+ */
 export async function createPowerMeterReport(
   req: Request,
   res: Response,
   next: NextFunction
 ) {
   try {
-    const { reportStart, reportEnd, consumption, reportSeriesNumber } =
-      req.body;
+    // Extract the data sent by the meter
+    const {
+      reportStart,
+      reportEnd,
+      consumption,
+      reportSeriesNumber,
+    }: {
+      reportStart: Date;
+      reportEnd: Date;
+      consumption: number;
+      reportSeriesNumber: number;
+    } = req.body;
 
     await PowerMeterReportModel.create({
       meter: req.meter._id,
