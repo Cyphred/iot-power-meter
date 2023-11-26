@@ -34,7 +34,7 @@ const ConsumerSchema: Schema<ConsumerDocument, IConsumerModel> = new Schema<
   IConsumerModel
 >({
   email: { type: String, required: true, unique: true },
-  password: { type: String, required: true },
+  password: { type: String, required: true, select: false },
   firstName: { type: String, required: true },
   middleName: { type: String },
   lastName: { type: String, required: true },
