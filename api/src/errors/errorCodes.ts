@@ -44,6 +44,10 @@ export class ErrorCode {
     "IOTPC0011",
     "A required env variable was not set"
   );
+  static readonly INVALID_CREDENTIALS = new ErrorCode(
+    "IOTPC0012",
+    "Invalid email/password"
+  );
 
   //to add, just increment the error code
 
