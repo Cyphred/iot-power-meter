@@ -36,6 +36,14 @@ export class ErrorCode {
     "IOTPC0009",
     "Employee does not exist"
   );
+  static readonly EMAIL_ALREADY_IN_USE = new ErrorCode(
+    "IOTPC0010",
+    "Email already in use"
+  );
+  static readonly MISSING_ENV_VALUE = new ErrorCode(
+    "IOTPC0011",
+    "A required env variable was not set"
+  );
 
   //to add, just increment the error code
 
