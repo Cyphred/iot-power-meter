@@ -1,7 +1,7 @@
 import mongoose, { Document, Schema, Types, Model } from "mongoose";
 
 export interface Employee {
-  username: string;
+  email: string;
   password: string;
   firstName: string;
   middleName?: string;
@@ -11,7 +11,7 @@ export interface Employee {
 export interface EmployeeDocument extends Employee, Document {}
 
 const EmployeeSchema: Schema<EmployeeDocument> = new Schema<EmployeeDocument>({
-  username: { type: String, required: true },
+  email: { type: String, required: true },
   password: { type: String, required: true },
   firstName: { type: String, required: true },
   middleName: { type: String },

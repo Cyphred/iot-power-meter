@@ -5,8 +5,11 @@ import {
   generatePowerMeterToken,
 } from "./controllers/PowerMeterController.js";
 import requireMeter from "./middleware/requireMeter.js";
+import { login } from "./controllers/loginController.js";
 
 const router = Router();
+
+router.post("/login", login);
 
 router.post("/meter/get-token", generatePowerMeterToken);
 router.post("/meter/reports", requireMeter, createPowerMeterReport);

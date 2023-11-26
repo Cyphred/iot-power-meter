@@ -24,6 +24,30 @@ export class ErrorCode {
     "IOTPC0006",
     "Expected data missing from token"
   );
+  static readonly INVALID_ACCOUNT_TYPE = new ErrorCode(
+    "IOTPC0007",
+    "Invalid account type"
+  );
+  static readonly CONSUMER_NOT_FOUND = new ErrorCode(
+    "IOTPC0008",
+    "Consumer does not exist"
+  );
+  static readonly EMPLOYEE_NOT_FOUND = new ErrorCode(
+    "IOTPC0009",
+    "Employee does not exist"
+  );
+  static readonly EMAIL_ALREADY_IN_USE = new ErrorCode(
+    "IOTPC0010",
+    "Email already in use"
+  );
+  static readonly MISSING_ENV_VALUE = new ErrorCode(
+    "IOTPC0011",
+    "A required env variable was not set"
+  );
+  static readonly INVALID_CREDENTIALS = new ErrorCode(
+    "IOTPC0012",
+    "Invalid email/password"
+  );
 
   //to add, just increment the error code
 
