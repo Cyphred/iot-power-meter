@@ -24,6 +24,18 @@ export class ErrorCode {
     "IOTPC0006",
     "Expected data missing from token"
   );
+  static readonly INVALID_ACCOUNT_TYPE = new ErrorCode(
+    "IOTPC0007",
+    "Invalid account type"
+  );
+  static readonly CONSUMER_NOT_FOUND = new ErrorCode(
+    "IOTPC0008",
+    "Consumer does not exist"
+  );
+  static readonly EMPLOYEE_NOT_FOUND = new ErrorCode(
+    "IOTPC0009",
+    "Employee does not exist"
+  );
 
   //to add, just increment the error code
 
