@@ -1,7 +1,7 @@
 import mongoose, { Document, Schema, Types, Model } from "mongoose";
 
 export interface Consumer {
-  username: string;
+  email: string;
   password: string;
   firstName: string;
   middleName?: string;
@@ -14,7 +14,7 @@ export interface Consumer {
 export interface ConsumerDocument extends Consumer, Document {}
 
 const ConsumerSchema: Schema<ConsumerDocument> = new Schema<ConsumerDocument>({
-  username: { type: String, required: true },
+  email: { type: String, required: true },
   password: { type: String, required: true },
   firstName: { type: String, required: true },
   middleName: { type: String },
