@@ -12,6 +12,7 @@ export interface Consumer {
   streetAddress: string;
   barangay: string;
   city: string;
+  active: boolean;
 }
 
 export interface ConsumerDocument extends Consumer, Document {}
@@ -41,6 +42,7 @@ const ConsumerSchema: Schema<ConsumerDocument, IConsumerModel> = new Schema<
   streetAddress: { type: String, required: true },
   barangay: { type: String, required: true },
   city: { type: String, required: true },
+  active: { type: Boolean, default: false },
 });
 
 ConsumerSchema.statics.signup = async function (args: {
