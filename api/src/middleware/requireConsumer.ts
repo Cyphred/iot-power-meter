@@ -38,7 +38,7 @@ export default async function requireConsumer(
     const jwtPayload = jwt.verify(token, process.env.JWT_SECRET) as JwtPayload;
 
     // Get power consumer _id from payload
-    const { consumerId }: { consumerId: string } = jwtPayload;
+    const consumerId: string = jwtPayload.consumerId;
 
     // Reject if consumer _id not in jwt payload
     if (!consumerId) throw new ApiError(ErrorCode.MISSING_DATA_FROM_JWT);

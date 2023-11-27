@@ -38,7 +38,7 @@ export default async function requireEmployee(
     const jwtPayload = jwt.verify(token, process.env.JWT_SECRET) as JwtPayload;
 
     // Get employee _id from payload
-    const { employeeId }: { employeeId: string } = jwtPayload;
+    const employeeId: string = jwtPayload.employeeId;
 
     // Reject if employee _id not in jwt payload
     if (!employeeId) throw new ApiError(ErrorCode.MISSING_DATA_FROM_JWT);
