@@ -48,6 +48,14 @@ export class ErrorCode {
     "IOTPC0012",
     "Invalid email/password"
   );
+  static readonly INVALID_QUERY_PARAMS = new ErrorCode(
+    "IOTPC0013",
+    "Invalid query parameters were provided"
+  );
+  static readonly BILL_NOT_FOUND = new ErrorCode(
+    "IOTPC0014",
+    "Bill does not exist"
+  );
 
   //to add, just increment the error code
 
