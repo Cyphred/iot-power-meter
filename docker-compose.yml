@@ -40,6 +40,16 @@ services:
     depends_on:
       - api
 
+  employee-web:
+    container_name: iot_power_company_employee_web
+    build: ./employee-web
+    ports:
+      - 3001:3000
+    volumes:
+      - ./employee-web:/app/employee-web
+    depends_on:
+      - api
+
 networks:
   mongodb:
     driver: bridge
