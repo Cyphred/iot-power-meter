@@ -62,3 +62,56 @@ export const getPartialBilling = async (
     next(err);
   }
 };
+
+export const getBill = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  try {
+    const { consumerId } = req.query;
+
+    // Parse the month, day, and year from the query params as numbers
+    const month = parseInt(req.query.month as string);
+    const year = parseInt(req.query.year as string);
+    const day = parseInt(req.query.day as string);
+
+    // Reject if month and year params are invalid or not provided
+    if (
+      isNaN(month) ||
+      isNaN(year) ||
+      isNaN(day) ||
+      month < 1 ||
+      month > 12 ||
+      day < 1 ||
+      day > 31
+    )
+      throw new ApiError(ErrorCode.INVALID_QUERY_PARAMS);
+
+    // Fetch consumer data
+    const consumer = await ConsumerModel.findOne({
+      _id: consumerId,
+      active: true,
+    });
+
+    // Reject if consumer does not exist
+    if (!consumer) throw new ApiError(ErrorCode.CONSUMER_NOT_FOUND);
+
+    // Define target month as a Date object
+    const targetDate = new Date();
+    targetDate.setFullYear(year, month - 1, day);
+
+    // Find the matching bill
+    const bill = await BillingModel.findOne({
+      start: { $lte: targetDate },
+      end: { $gte: targetDate },
+    });
+
+    // Reject if a bill was not found
+    if (!bill) throw new ApiError(ErrorCode.BILL_NOT_FOUND);
+
+    return genericOkResponse(res, bill);
+  } catch (err) {
+    next(err);
+  }
+};
