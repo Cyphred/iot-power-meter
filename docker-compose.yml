@@ -30,13 +30,13 @@ services:
     networks:
       - mongodb
 
-  web:
-    container_name: iot_power_company_web
-    build: ./web
+  consumer-web:
+    container_name: iot_power_company_consumer_web
+    build: ./consumer-web
     ports:
       - 3000:3000
     volumes:
-      - ./web:/app/web
+      - ./consumer-web:/app/consumer-web
     depends_on:
       - api
 
