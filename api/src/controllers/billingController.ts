@@ -7,7 +7,7 @@ import BillingModel from "../models/billing.js";
 import PowerMeterReportModel from "../models/powerMeterReport.js";
 import genericOkResponse from "../common/genericOkResponse.js";
 
-export const getInitialBilling = async (
+export const getPartialBilling = async (
   req: Request,
   res: Response,
   next: NextFunction
