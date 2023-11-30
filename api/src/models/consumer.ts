@@ -70,7 +70,7 @@ ConsumerSchema.statics.signup = async function (args: {
   const ConsumerModel = this as Model<ConsumerDocument>;
 
   // Check if the email is already in use
-  const existing = await ConsumerModel.count({ email });
+  const existing = await ConsumerModel.countDocuments({ email });
 
   // Reject if the email is already in use
   if (existing) throw new ApiError(ErrorCode.EMAIL_ALREADY_IN_USE);
