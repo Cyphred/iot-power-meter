@@ -8,11 +8,13 @@ import requireMeter from "./middleware/requireMeter.js";
 import { login } from "./controllers/loginController.js";
 import { getBill, getPartialBilling } from "./controllers/billingController.js";
 import { requireAuth } from "./middleware/requireAuth.js";
+import { createConsumer } from "./controllers/consumerController.js";
 
 const router = Router();
 
 // Routes that do not require authentication
 router.post("/login", login);
+router.post("/register/consumer", createConsumer);
 router.post("/meter/get-token", generatePowerMeterToken);
 
 // Routes that can only be accessed by power meters
