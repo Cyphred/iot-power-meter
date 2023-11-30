@@ -59,13 +59,10 @@ export const login = async (
       // Fetch the consumer's power meter
       const meter = await PowerMeterModel.findOne({ consumer: consumer._id });
 
-      // Reject if the meter does not exist
-      if (!meter) throw new ApiError(ErrorCode.METER_NOT_FOUND);
-
       return genericOkResponse(res, {
         token,
         consumer,
-        meter: { _id: meter._id },
+        meter: meter ? { _id: meter._id } : undefined,
       });
     } else if (_type === accountTypes.EMPLOYEE) {
       const token = await authenticateEmployee(email, password);
