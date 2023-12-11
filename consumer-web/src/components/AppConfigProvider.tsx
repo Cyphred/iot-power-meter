@@ -8,9 +8,6 @@ const AppConfigProvider = ({ children }: { children: ReactNode }) => {
         titleMarginTop: 0,
         titleMarginBottom: 0,
       },
-      Form: {
-        itemMarginBottom: 0,
-      },
     },
   };
 
