@@ -1,4 +1,4 @@
-FROM node:16-alpine
+FROM node:20-alpine
 WORKDIR /app/consumer-web/
 COPY package*.json /app/consumer-web/
 RUN npm install
