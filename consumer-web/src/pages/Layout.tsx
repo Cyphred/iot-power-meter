@@ -1,9 +1,22 @@
-import { Breadcrumb, Layout as AntLayout, Menu, theme } from "antd";
+import { Layout as AntLayout, Button, Menu, Typography, theme } from "antd";
 import { Outlet } from "react-router-dom";
+import { useLogout } from "../hooks/useLogout";
+import { useAppSelector } from "../redux/hooks";
 
 const { Header, Content, Footer } = AntLayout;
 
+const links = [{ key: 0, label: "" }];
+
 const Layout = () => {
+  const { logout } = useLogout();
+  const { user } = useAppSelector((state) => {
+    return { user: state.auth.user };
+  });
+
+  const handleLogout = () => {
+    logout();
+  };
+
   const {
     token: { colorBgContainer },
   } = theme.useToken();
@@ -12,6 +25,7 @@ const Layout = () => {
     <AntLayout className="layout" style={{ width: "100vw", height: "100vh" }}>
       <Header style={{ display: "flex", alignItems: "center" }}>
         <div className="demo-logo" />
+        {/*
         <Menu
           theme="dark"
           mode="horizontal"
@@ -24,16 +38,16 @@ const Layout = () => {
             };
           })}
         />
+        */}
+        <Typography.Text style={{ color: "white" }}>
+          Logged in as {user?.firstName} {user?.lastName}
+        </Typography.Text>
+        <Button onClick={handleLogout}>Log out</Button>
       </Header>
-      <Content style={{ padding: "0 50px" }}>
-        <Breadcrumb style={{ margin: "16px 0" }}>
-          <Breadcrumb.Item>Home</Breadcrumb.Item>
-          <Breadcrumb.Item>List</Breadcrumb.Item>
-          <Breadcrumb.Item>App</Breadcrumb.Item>
-        </Breadcrumb>
+      <Content style={{ padding: "0 50px", overflow: "scroll" }}>
         <div
           className="site-layout-content"
-          style={{ background: colorBgContainer }}
+          style={{ background: colorBgContainer, height: "100%" }}
         >
           <Outlet />
         </div>
