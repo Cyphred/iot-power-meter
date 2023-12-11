@@ -5,7 +5,6 @@ export interface PowerMeterReport {
   reportStart: Date;
   reportEnd: Date;
   consumption: number;
-  reportSeriesNumber: number;
 }
 
 export interface PowerMeterReportDocument extends PowerMeterReport, Document {}
@@ -40,11 +39,6 @@ const PowerMeterReportSchema: Schema<PowerMeterReportDocument> =
         },
         message: "Consumption cannot be negative",
       },
-    },
-    reportSeriesNumber: {
-      type: Number,
-      required: true,
-      unique: true,
     },
   });
 
