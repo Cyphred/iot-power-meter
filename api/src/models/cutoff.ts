@@ -1,7 +1,8 @@
-import mongoose, { Schema, Document, Model } from "mongoose";
+import mongoose, { Schema, Document, Model, Types } from "mongoose";
 
 export interface ICutoff {
   cutoffDate: Date;
+  rate: Types.ObjectId;
 }
 
 export interface ICutoffDocument extends ICutoff, Document {}
@@ -10,6 +11,11 @@ const cutoffSchema: Schema<ICutoffDocument> = new Schema<ICutoffDocument>(
   {
     cutoffDate: {
       type: Date,
+      required: true,
+    },
+    rate: {
+      type: Schema.Types.ObjectId,
+      ref: "Rate",
       required: true,
     },
   },
