@@ -14,6 +14,7 @@ const PowerMeterSchema: Schema<PowerMeterDocument> =
     secret: {
       type: String,
       required: true,
+      select: false,
     },
     consumer: {
       type: Schema.Types.ObjectId,
