@@ -1,7 +1,5 @@
-import { Dayjs } from "dayjs";
-
 export default interface IMeter {
   _id: string;
-  lastSeen: Dayjs;
+  lastSeen: string;
   active: boolean;
 }
