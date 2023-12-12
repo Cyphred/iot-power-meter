@@ -72,8 +72,8 @@ export async function createPowerMeterReport(
 
     for (const r of reports) {
       const newReport: PowerMeterReport = {
-        reportStart: r.start,
-        reportEnd: r.end,
+        reportStart: new Date(r.start.getTime() * 1000),
+        reportEnd: new Date(r.end.getTime() * 1000),
         consumption: r.consumption,
         // FIXME Very hacky, check why this is complaining about
         // being a document
