@@ -14,7 +14,7 @@ export default () => {
     city: string;
   }) => {
     const response = await post(
-      `${import.meta.env.VITE_API_URI}/signup/consumer`,
+      `${import.meta.env.VITE_API_URI}/register/consumer`,
       consumerData
     );
 

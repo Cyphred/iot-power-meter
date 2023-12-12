@@ -4,6 +4,7 @@ import Login from "./pages/Login";
 import Dashboard from "./pages/Dashboard";
 import AppConfigProvider from "./components/AppConfigProvider";
 import Layout from "./pages/Layout";
+import Signup from "./pages/Signup";
 
 function App() {
   return (
@@ -12,6 +13,7 @@ function App() {
         <BrowserRouter>
           <Routes>
             <Route path="/login" element={<Login />} />
+            <Route path="/signup" element={<Signup />} />
             <Route path="/" element={<Layout />}>
               <Route path="dashboard" element={<Dashboard />} />
             </Route>

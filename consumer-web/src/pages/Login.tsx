@@ -2,7 +2,7 @@ import { Card, Flex, Typography, Button, Form, Input, Alert } from "antd";
 import useLogin from "../hooks/useLogin";
 import { useAppSelector } from "../redux/hooks";
 import { useEffect } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useSearchParams } from "react-router-dom";
 
 type FieldType = {
   email?: string;
@@ -12,6 +12,7 @@ type FieldType = {
 const Login = () => {
   const { token, user } = useAppSelector((state) => state.auth);
   const { login, isLoading, apiError, serverError } = useLogin();
+  const [searchParams, setSearchParams] = useSearchParams();
   const navigate = useNavigate();
 
   const onFinish = async ({ email, password }: FieldType) => {
@@ -47,7 +48,6 @@ const Login = () => {
           >
             <Input />
           </Form.Item>
-
           <Form.Item<FieldType>
             label="Password"
             name="password"
@@ -55,12 +55,19 @@ const Login = () => {
           >
             <Input.Password />
           </Form.Item>
-
           {apiError && (
             <Alert message={apiError.message} type="error" closable />
           )}
           {serverError && (
             <Alert message={serverError.message} type="error" closable />
+          )}
+          {searchParams.get("createAccountSuccess") === "1" && (
+            <Alert
+              showIcon
+              message="Account creation successful. You may now login."
+              type="success"
+              closable
+            />
           )}
 
           <Flex
