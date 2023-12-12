@@ -5,7 +5,11 @@ import ApiError from "../errors/apiError.js";
 import { ErrorCode } from "../errors/errorCodes.js";
 import createToken from "../common/createToken.js";
 import genericOkResponse from "../common/genericOkResponse.js";
-import PowerMeterReportModel from "../models/powerMeterReport.js";
+import PowerMeterReportModel, {
+  PowerMeterReport,
+} from "../models/powerMeterReport.js";
+import IConsumptionFrame from "../types/ConsumptionFrame.js";
+import { Types } from "mongoose";
 
 /**
  * Generates a token for validating data coming from a power meter.
@@ -58,25 +62,32 @@ export async function createPowerMeterReport(
 ) {
   try {
     // Extract the data sent by the meter
-    const {
-      reportStart,
-      reportEnd,
-      consumption,
-      reportSeriesNumber,
-    }: {
-      reportStart: Date;
-      reportEnd: Date;
-      consumption: number;
-      reportSeriesNumber: number;
-    } = req.body;
+    const reports = req.body.reports as IConsumptionFrame[];
 
-    await PowerMeterReportModel.create({
-      meter: req.meter._id,
-      reportStart,
-      reportEnd,
-      consumption,
-      reportSeriesNumber,
-    });
+    console.log(req.body.reports);
+
+    const formattedReports: PowerMeterReport[] = [];
+
+    console.log("meter id", req.meter._id);
+
+    for (const r of reports) {
+      const newReport: PowerMeterReport = {
+        reportStart: r.start,
+        reportEnd: r.end,
+        consumption: r.consumption,
+        // FIXME Very hacky, check why this is complaining about
+        // being a document
+        meter: req.meter._id as unknown as Types.ObjectId,
+      };
+
+      console.log("new report", newReport);
+
+      formattedReports.push(newReport);
+    }
+
+    console.log(formattedReports);
+
+    await PowerMeterReportModel.insertMany(formattedReports);
 
     return genericOkResponse(res, null, "Report created");
   } catch (err) {
