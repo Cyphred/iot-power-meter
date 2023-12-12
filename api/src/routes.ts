@@ -3,6 +3,7 @@ import globalErrorHandler from "./errors/globalErrorHandler.js";
 import {
   createPowerMeterReport,
   generatePowerMeterToken,
+  ping,
 } from "./controllers/PowerMeterController.js";
 import requireMeter from "./middleware/requireMeter.js";
 import { login } from "./controllers/loginController.js";
@@ -19,6 +20,7 @@ router.post("/meter/get-token", generatePowerMeterToken);
 
 // Routes that can only be accessed by power meters
 router.post("/meter/reports", requireMeter, createPowerMeterReport);
+router.post("/meter/ping", requireMeter, ping);
 
 // Routes beyond this point require authentication
 router.use(requireAuth);

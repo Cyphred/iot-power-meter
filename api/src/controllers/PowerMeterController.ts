@@ -85,12 +85,30 @@ export async function createPowerMeterReport(
       formattedReports.push(newReport);
     }
 
-    console.log(formattedReports);
-
     await PowerMeterReportModel.insertMany(formattedReports);
 
-    return genericOkResponse(res, null, "Report created");
+    // Update when the meter was last seen
+    await PowerMeterModel.findOneAndUpdate(
+      { _id: req.meter._id },
+      { lastSeen: new Date() }
+    );
+
+    return genericOkResponse(res, null, "Reports created");
   } catch (err) {
     next(err);
   }
 }
+
+export const ping = async (req: Request, res: Response, next: NextFunction) => {
+  try {
+    // Update when the meter was last seen
+    await PowerMeterModel.findOneAndUpdate(
+      { _id: req.meter._id },
+      { lastSeen: new Date() }
+    );
+
+    return genericOkResponse(res, undefined);
+  } catch (err) {
+    next(err);
+  }
+};
