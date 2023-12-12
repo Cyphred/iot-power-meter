@@ -63,7 +63,13 @@ const Login = () => {
             <Alert message={serverError.message} type="error" closable />
           )}
 
-          <Flex style={{ width: "100%", paddingRight: 22 }} justify="flex-end">
+          <Flex
+            style={{ width: "100%", paddingRight: 22 }}
+            justify="space-between"
+          >
+            <Typography.Link onClick={() => navigate("/signup")}>
+              Create an account
+            </Typography.Link>
             <Form.Item wrapperCol={{ offset: 8, span: 16 }}>
               <Button type="primary" htmlType="submit" disabled={isLoading}>
                 Login

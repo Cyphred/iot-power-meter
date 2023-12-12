@@ -1,6 +1,6 @@
 import useRequest from "./useRequest";
 
-export default async () => {
+export default () => {
   const { isLoading, apiError, serverError, post } = useRequest();
 
   const signup = async (consumerData: {
