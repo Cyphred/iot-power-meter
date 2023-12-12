@@ -29,22 +29,19 @@ export default async function requireMeter(
     // Looks like this:
     // <meter_id>:<meter_secret>
     // For example, meter1:1t95tr34g
-    const [meterId, meterSecret] = authorization.split(":")[1];
+    console.log(authorization);
+    const [meterId, meterSecret] = authorization.split(":");
+
+    console.log("meterid", meterId, "metersecret", meterSecret);
 
     // Reject if no token found
     if (!meterId || !meterSecret) throw missingAuthenticationTokenError;
 
     // Fetch meter data
-    const meter = await PowerMeterModel.findById(meterId);
+    const meter = await PowerMeterModel.findOne({ secret: meterSecret });
 
     // Reject if meter _id has no match
     if (!meter) throw meterNotFoundError;
-
-    // Check if secrets match
-    const secretsMatch = meter.secret === meterSecret;
-
-    // Reject if the secrets don't match
-    if (!secretsMatch) throw meterNotFoundError;
 
     req.meter = meter;
     next();
