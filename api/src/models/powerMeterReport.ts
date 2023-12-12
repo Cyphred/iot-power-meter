@@ -4,6 +4,9 @@ export interface PowerMeterReport {
   meter: Types.ObjectId;
   reportStart: Date;
   reportEnd: Date;
+  /**
+   * Consumption in KWH
+   */
   consumption: number;
 }
 
@@ -23,12 +26,6 @@ const PowerMeterReportSchema: Schema<PowerMeterReportDocument> =
     reportEnd: {
       type: Date,
       required: true,
-      validate: {
-        validator: function (endDate: Date) {
-          return this.reportStart < endDate;
-        },
-        message: "Report start must be older than report end",
-      },
     },
     consumption: {
       type: Number,
