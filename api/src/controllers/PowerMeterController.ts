@@ -80,8 +80,6 @@ export async function createPowerMeterReport(
         meter: req.meter._id as unknown as Types.ObjectId,
       };
 
-      console.log("new report", newReport);
-
       formattedReports.push(newReport);
     }
 
