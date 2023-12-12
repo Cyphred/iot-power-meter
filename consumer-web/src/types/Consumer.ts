@@ -7,4 +7,5 @@ export default interface IConsumer {
   barangay: string;
   city: string;
   active: boolean;
+  meter?: string;
 }
