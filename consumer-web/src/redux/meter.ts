@@ -1,29 +1,24 @@
 import { PayloadAction, createSlice } from "@reduxjs/toolkit";
-import { Dayjs } from "dayjs";
+import IMeter from "../types/Meter";
 
 interface MeterState {
-  _id: string | null;
-  lastSeen: Dayjs | null;
+  meter: IMeter | null;
 }
 
 const initialState: MeterState = {
-  _id: null,
-  lastSeen: null,
+  meter: null,
 };
 
 export const authSlice = createSlice({
   name: "auth",
   initialState,
   reducers: {
-    setMeterId: (state, action: PayloadAction<string | null>) => {
-      state._id = action.payload;
-    },
-    setLastSeen: (state, action: PayloadAction<Dayjs | null>) => {
-      state.lastSeen = action.payload;
+    setMeter: (state, action: PayloadAction<IMeter | null>) => {
+      state.meter = action.payload;
     },
   },
 });
 
-export const { setMeterId, setLastSeen } = authSlice.actions;
+export const { setMeter } = authSlice.actions;
 
 export default authSlice.reducer;
