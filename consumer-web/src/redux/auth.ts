@@ -8,7 +8,6 @@ interface StorageToken {
 interface AuthState {
   user: IConsumer | null;
   token: string | null;
-  meter: string | null;
 }
 
 function getUserFromLocalStorage() {
@@ -27,7 +26,6 @@ function getUserFromLocalStorage() {
 const initialState: AuthState = {
   user: null,
   token: getUserFromLocalStorage(),
-  meter: null,
 };
 
 export const authSlice = createSlice({
@@ -40,12 +38,9 @@ export const authSlice = createSlice({
     setToken: (state, action: PayloadAction<string | null>) => {
       state.token = action.payload;
     },
-    setMeter: (state, action: PayloadAction<string | null>) => {
-      state.meter = action.payload;
-    },
   },
 });
 
-export const { setUser, setToken, setMeter } = authSlice.actions;
+export const { setUser, setToken } = authSlice.actions;
 
 export default authSlice.reducer;
