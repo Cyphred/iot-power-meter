@@ -57,12 +57,15 @@ export const login = async (
       const consumer = await ConsumerModel.findOne({ email });
 
       // Fetch the consumer's power meter
-      const meter = await PowerMeterModel.findOne({ consumer: consumer._id });
+      const meter = await PowerMeterModel.findOne(
+        { consumer: consumer._id },
+        { secret: 0, consumer: 0 }
+      );
 
       return genericOkResponse(res, {
         token,
         consumer,
-        meter: meter ? { _id: meter._id } : undefined,
+        meter: meter,
       });
     } else if (_type === accountTypes.EMPLOYEE) {
       const token = await authenticateEmployee(email, password);
