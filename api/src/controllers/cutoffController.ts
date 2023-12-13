@@ -16,8 +16,14 @@ export const createCutoff = async (
     const rateData = await RateModel.findById(rate);
     if (!rate) throw new ApiError(ErrorCode.RATE_NOT_FOUND);
 
+    const parsedCutoffDate = new Date(cutoffDate);
+    parsedCutoffDate.setHours(0);
+    parsedCutoffDate.setMinutes(0);
+    parsedCutoffDate.setSeconds(0);
+    parsedCutoffDate.setMilliseconds(0);
+
     const cutoff = await CutoffModel.create({
-      cutoffDate: new Date(cutoffDate),
+      cutoffDate: parsedCutoffDate,
       rate: rateData._id,
     });
 
