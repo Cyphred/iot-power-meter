@@ -4,18 +4,25 @@ import { useNavigate } from "react-router-dom";
 import { Card, Descriptions, Flex, Typography } from "antd";
 import dayjs from "dayjs";
 import relativeTime from "dayjs/plugin/relativeTime";
+import useReports from "../hooks/useReports";
 dayjs.extend(relativeTime);
 
 const Dashboard = () => {
-  const { token, user, stats, meter } = useAppSelector((state) => {
+  const { token, user, consumption, meter, rate } = useAppSelector((state) => {
     return {
       token: state.auth.token,
       user: state.auth.user,
       meter: state.meter.meter,
-      stats: state.stats,
+      consumption: state.stats.consumption?.consumption,
+      rate: state.stats.consumption?.ratePerKwh,
     };
   });
   const navigate = useNavigate();
+  const { getConsumptionReport } = useReports();
+
+  useEffect(() => {
+    getConsumptionReport();
+  }, []);
 
   useEffect(() => {
     if (!token || !user) navigate("/login");
@@ -54,20 +61,44 @@ const Dashboard = () => {
       </Descriptions.Item>
 
       <Descriptions.Item label="Average Load">
-        {stats.averageLoad.toFixed(4)} KWH
+        {consumption ? (
+          <>{consumption.averageDaily.toFixed(4)} KWH</>
+        ) : (
+          <>No data</>
+        )}
       </Descriptions.Item>
 
       <Descriptions.Item label="Current Load">
-        {stats.currentLoad.toFixed(4)} KWH
+        {consumption && consumption.rightNow ? (
+          dayjs(new Date()).diff(consumption.rightNow.timestamp, "seconds") >=
+          10 ? (
+            <>No data - meter has been offline for too long.</>
+          ) : (
+            <>{consumption.rightNow.value.toFixed(4)} W</>
+          )
+        ) : (
+          <>No data</>
+        )}
       </Descriptions.Item>
 
       <Descriptions.Item label="This month's consumption">
-        {stats.currentConsumption.toFixed(4)} KWH
+        {consumption ? (
+          <> {consumption.sinceCutoff.toFixed(4)} KWH </>
+        ) : (
+          <>No data</>
+        )}
       </Descriptions.Item>
 
       <Descriptions.Item label="Current bill">
-        Php. {stats.estimatedBill.toFixed(2)} @ Php.{" "}
-        {stats.estimatedRate.toFixed(2)}/KWH
+        {rate && consumption ? (
+          <>
+            Php. {(consumption.sinceCutoff * rate).toFixed(2)} @ Php.{" "}
+            {rate.toFixed(2)}
+            /KWH
+          </>
+        ) : (
+          <>No data</>
+        )}
       </Descriptions.Item>
     </Descriptions>
   );

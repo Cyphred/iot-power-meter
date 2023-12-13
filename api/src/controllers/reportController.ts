@@ -69,15 +69,18 @@ export const getConsumptionReport = async (
       `wattageNow:${meter._id}`
     );
     await redisClient.quit();
-    const wattageRightNow = parseInt(wattageRightNowString);
+    const wattageRightNow = JSON.parse(wattageRightNowString) as {
+      value: number;
+      timestamp: Date;
+    };
 
     const payload = {
       lastCutoff: lastCutoff ? lastCutoff.cutoffDate : undefined,
       meter,
       consumption: {
         sinceCutoff: whSinceCutoff,
-        averageDaily: getDailyAverage(reports),
-        rightNow: isNaN(wattageRightNow) ? 0.1 : wattageRightNow,
+        averageDaily: await getDailyAverage(reports),
+        rightNow: !wattageRightNow ? undefined : wattageRightNow,
       },
       ratePerKwh: rate.ratePerKwh,
       rateBreakdown: rate.breakdown,
@@ -89,37 +92,38 @@ export const getConsumptionReport = async (
   }
 };
 
-const getDailyAverage = async (
-  reports: PowerMeterReportDocument[]
-): Promise<PowerMeterReportDocument[]> => {
-  const result = await PowerMeterReportModel.aggregate([
-    {
-      $group: {
-        _id: {
-          year: { $year: "$reportStart" },
-          month: { $month: "$reportStart" },
-          day: { $dayOfMonth: "$reportStart" },
-        },
-        averageConsumption: { $avg: "$consumption" },
-      },
-    },
-    {
-      $project: {
-        _id: 0,
-        date: {
-          $dateFromParts: {
-            year: "$_id.year",
-            month: "$_id.month",
-            day: "$_id.day",
+const getDailyAverage = async (reports: PowerMeterReportDocument[]) => {
+  const result: { averageConsumption: number; date: Date }[] =
+    await PowerMeterReportModel.aggregate([
+      {
+        $group: {
+          _id: {
+            year: { $year: "$reportStart" },
+            month: { $month: "$reportStart" },
+            day: { $dayOfMonth: "$reportStart" },
           },
+          averageConsumption: { $avg: "$consumption" },
         },
-        averageConsumption: 1,
       },
-    },
-    {
-      $sort: { date: 1 },
-    },
-  ]);
+      {
+        $project: {
+          _id: 0,
+          date: {
+            $dateFromParts: {
+              year: "$_id.year",
+              month: "$_id.month",
+              day: "$_id.day",
+            },
+          },
+          averageConsumption: 1,
+        },
+      },
+      {
+        $sort: { date: 1 },
+      },
+    ]);
 
-  return result;
+  if (!result.length) return;
+
+  return result[0].averageConsumption;
 };
