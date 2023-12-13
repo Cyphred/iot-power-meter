@@ -14,13 +14,14 @@ import { getConsumptionReport } from "./controllers/reportController.js";
 import { createCutoff } from "./controllers/cutoffController.js";
 import requireEmployee from "./middleware/requireEmployee.js";
 import { createEmployee } from "./controllers/employeeController.js";
+import { createRate } from "./controllers/rateController.js";
 
 const router = Router();
 
 // Routes that do not require authentication
 router.post("/login", login);
 router.post("/register/consumer", createConsumer);
-router.post("/register/employee", createEmployee);
+router.post("/register/employee", requireAuth, requireEmployee, createEmployee);
 router.post("/meter/get-token", generatePowerMeterToken);
 
 // Routes that can only be accessed by power meters
@@ -34,7 +35,8 @@ router.get("/billing", getBill);
 router.get("/billing/partial", getPartialBilling);
 router.get("/reports/consumption/:consumerId", getConsumptionReport);
 
-router.post("/cutoff", requireEmployee, createCutoff);
+router.post("/cutoffs", requireEmployee, createCutoff);
+router.post("/rates", requireEmployee, createRate);
 
 // Do not put routes or other middleware beyond this global handler
 router.use(globalErrorHandler);
