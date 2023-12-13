@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { useAppSelector } from "../redux/hooks";
 import { useNavigate } from "react-router-dom";
-import { Button, Card, Descriptions, Flex, Table, Typography } from "antd";
+import { Button, Card, Descriptions, Flex, Typography } from "antd";
 import dayjs from "dayjs";
 import relativeTime from "dayjs/plugin/relativeTime";
 import useReports from "../hooks/useReports";
