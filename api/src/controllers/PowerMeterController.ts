@@ -100,19 +100,22 @@ export async function createPowerMeterReport(
 
 export const ping = async (req: Request, res: Response, next: NextFunction) => {
   try {
-    const { wattageNow }: { wattageNow: number } = req.body;
+    const {
+      currentNow,
+      sensorError,
+    }: { currentNow: number; sensorError: boolean } = req.body;
 
     const timeNow = new Date();
 
-    const cachedWattage = {
-      value: wattageNow,
+    const cachedCurrent = {
+      value: currentNow,
       timestamp: timeNow,
     };
 
     const redisClient = await getRedisClient();
     await redisClient.set(
-      `wattageNow:${req.meter._id}`,
-      JSON.stringify(cachedWattage)
+      `currentNow:${req.meter._id}`,
+      JSON.stringify(cachedCurrent)
     );
     await redisClient.quit();
 
