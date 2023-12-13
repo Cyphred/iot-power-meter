@@ -1,4 +1,4 @@
-import { Layout as AntLayout, Button, Typography, theme } from "antd";
+import { Layout as AntLayout, Button, Flex, Typography, theme } from "antd";
 import { Outlet } from "react-router-dom";
 import { useLogout } from "../hooks/useLogout";
 import { useAppSelector } from "../redux/hooks";
@@ -21,12 +21,29 @@ const Layout = () => {
 
   return (
     <AntLayout className="layout" style={{ width: "100vw", height: "100vh" }}>
-      <Header style={{ display: "flex", alignItems: "center" }}>
-        <div className="demo-logo" />
-        <Typography.Text style={{ color: "white" }}>
-          Logged in as {user?.firstName} {user?.lastName}
-        </Typography.Text>
-        <Button onClick={handleLogout}>Log out</Button>
+      <Header
+        style={{
+          display: "flex",
+          alignItems: "center",
+          backgroundColor: "#f04134",
+        }}
+      >
+        <Flex
+          gap={8}
+          align="center"
+          justify="space-between"
+          style={{ width: "100%" }}
+        >
+          <Typography.Title level={5} style={{ margin: 0, color: "white" }}>
+            Employee Dashboard
+          </Typography.Title>
+          <Flex gap={8} align="center">
+            <Typography.Text style={{ color: "white" }}>
+              Logged in as {user?.firstName} {user?.lastName}
+            </Typography.Text>
+            <Button onClick={handleLogout}>Log out</Button>
+          </Flex>
+        </Flex>
       </Header>
       <Content style={{ padding: "0 50px", overflow: "scroll" }}>
         <div
