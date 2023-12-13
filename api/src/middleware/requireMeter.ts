@@ -29,10 +29,7 @@ export default async function requireMeter(
     // Looks like this:
     // <meter_id>:<meter_secret>
     // For example, meter1:1t95tr34g
-    console.log(authorization);
     const [meterId, meterSecret] = authorization.split(":");
-
-    console.log("meterid", meterId, "metersecret", meterSecret);
 
     // Reject if no token found
     if (!meterId || !meterSecret) throw missingAuthenticationTokenError;
