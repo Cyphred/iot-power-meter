@@ -6,7 +6,6 @@ const AppConfigProvider = ({ children }: { children: ReactNode }) => {
     components: {
       Typography: {
         titleMarginTop: 0,
-        titleMarginBottom: 0,
       },
     },
   };
