@@ -4,7 +4,7 @@ import AppConfigProvider from "./components/AppConfigProvider";
 import Login from "./pages/Login";
 import Layout from "./pages/Layout";
 import Signup from "./pages/Signup";
-import Dashboard from "./pages/Dashboard";
+import Subscribers from "./pages/Subscribers";
 import Rates from "./pages/Rates";
 
 function App() {
@@ -16,7 +16,7 @@ function App() {
             <Route path="/login" element={<Login />} />
             <Route path="/signup" element={<Signup />} />
             <Route path="/" element={<Layout />}>
-              <Route path="dashboard" element={<Dashboard />} />
+              <Route path="subscribers" element={<Subscribers />} />
               <Route path="rates" element={<Rates />} />
             </Route>
           </Routes>
