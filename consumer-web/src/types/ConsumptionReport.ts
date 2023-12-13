@@ -14,8 +14,10 @@ export default interface IConsumptionReport {
     };
   };
   ratePerKwh: number;
-  rateBreakdown: {
-    description: string;
-    amount: number;
-  }[];
+  rateBreakdown: IRateBreakdown[];
+}
+
+export interface IRateBreakdown {
+  description: string;
+  amount: number;
 }
