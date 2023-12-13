@@ -5,6 +5,7 @@ import Login from "./pages/Login";
 import Layout from "./pages/Layout";
 import Signup from "./pages/Signup";
 import Dashboard from "./pages/Dashboard";
+import Rates from "./pages/Rates";
 
 function App() {
   return (
@@ -16,6 +17,7 @@ function App() {
             <Route path="/signup" element={<Signup />} />
             <Route path="/" element={<Layout />}>
               <Route path="dashboard" element={<Dashboard />} />
+              <Route path="rates" element={<Rates />} />
             </Route>
           </Routes>
         </BrowserRouter>
