@@ -1,4 +1,4 @@
-import { useAppDispatch } from "../redux/hooks";
+import { useAppDispatch, useAppSelector } from "../redux/hooks";
 import { setConsumption } from "../redux/stats";
 import IConsumptionReport from "../types/ConsumptionReport";
 import useRequest from "./useRequest";
@@ -6,10 +6,20 @@ import useRequest from "./useRequest";
 export default () => {
   const { isLoading, apiError, serverError, authorizedGet } = useRequest();
   const dispatch = useAppDispatch();
+  const consumer = useAppSelector((state) => state.auth.user);
 
-  const getConsumptionReport = async (consumerId: string) => {
+  const getConsumptionReport = async (consumerId?: string) => {
+    let target: string;
+
+    if (consumerId) target = consumerId;
+    else if (consumer) {
+      target = consumer._id;
+    } else {
+      return; // Do not proceed if there is no consumer targeted
+    }
+
     const response = await authorizedGet(
-      `${import.meta.env.VITE_API_URI}/reports/consumption/${consumerId}`
+      `${import.meta.env.VITE_API_URI}/reports/consumption/${target}`
     );
 
     if (!response) {
