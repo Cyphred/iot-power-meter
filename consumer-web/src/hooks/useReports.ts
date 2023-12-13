@@ -1,8 +1,11 @@
+import { useAppDispatch } from "../redux/hooks";
+import { setConsumption } from "../redux/stats";
 import IConsumptionReport from "../types/ConsumptionReport";
 import useRequest from "./useRequest";
 
 export default () => {
   const { isLoading, apiError, serverError, authorizedGet } = useRequest();
+  const dispatch = useAppDispatch();
 
   const getConsumptionReport = async (consumerId: string) => {
     const response = await authorizedGet(
@@ -18,7 +21,10 @@ export default () => {
       return;
     }
 
-    return response.body as IConsumptionReport;
+    const report = response.body as IConsumptionReport;
+
+    dispatch(setConsumption(report));
+    return report;
   };
 
   return { isLoading, apiError, serverError, getConsumptionReport };
