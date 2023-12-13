@@ -26,7 +26,7 @@ const Login = () => {
   };
 
   useEffect(() => {
-    if (user && token) navigate("/dashboard");
+    if (user && token) navigate("/subscribers");
   }, [token, user]);
 
   return (
