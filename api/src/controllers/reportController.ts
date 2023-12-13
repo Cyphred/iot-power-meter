@@ -68,6 +68,7 @@ export const getConsumptionReport = async (
     const wattageRightNowString = await redisClient.get(
       `wattageNow:${meter._id}`
     );
+    await redisClient.quit();
     const wattageRightNow = parseInt(wattageRightNowString);
 
     const payload = {
