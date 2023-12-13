@@ -1,4 +1,5 @@
 import { useAppDispatch, useAppSelector } from "../redux/hooks";
+import { setMeter } from "../redux/meter";
 import { setConsumption } from "../redux/stats";
 import IConsumptionReport from "../types/ConsumptionReport";
 import useRequest from "./useRequest";
@@ -34,6 +35,7 @@ export default () => {
     const report = response.body as IConsumptionReport;
 
     dispatch(setConsumption(report));
+    dispatch(setMeter(report.meter));
     return report;
   };
 
