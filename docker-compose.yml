@@ -18,6 +18,15 @@ services:
     networks:
       - mongodb
 
+  redis:
+    container_name: iot_power_company_redis
+    image: redis/redis-stack:latest
+    ports:
+      - 6379:6379
+      - 8801:8001 # RedisInsight
+    networks:
+      - redis
+
   api:
     container_name: iot_power_company_api
     build: ./api
@@ -25,10 +34,12 @@ services:
       - 8000:8000
     depends_on:
       - mongodb
+      - redis
     volumes:
       - ./api:/app/api/
     networks:
       - mongodb
+      - redis
 
   consumer-web:
     container_name: iot_power_company_consumer_web
@@ -52,4 +63,6 @@ services:
 
 networks:
   mongodb:
+    driver: bridge
+  redis:
     driver: bridge
