@@ -1,6 +1,6 @@
 import mongoose, { Schema, Document, Model } from "mongoose";
 
-interface IRateBreakdown {
+export interface IRateBreakdown {
   description: string;
   amount: number;
 }
