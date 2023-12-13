@@ -10,6 +10,8 @@ import { login } from "./controllers/loginController.js";
 import { getBill, getPartialBilling } from "./controllers/billingController.js";
 import { requireAuth } from "./middleware/requireAuth.js";
 import { createConsumer } from "./controllers/consumerController.js";
+import { createCutoff } from "./controllers/cutoffController.js";
+import requireEmployee from "./middleware/requireEmployee.js";
 
 const router = Router();
 
@@ -27,6 +29,7 @@ router.use(requireAuth);
 
 router.get("/billing", getBill);
 router.get("/billing/partial", getPartialBilling);
+router.post("/cutoff", requireEmployee, createCutoff);
 
 // Do not put routes or other middleware beyond this global handler
 router.use(globalErrorHandler);
