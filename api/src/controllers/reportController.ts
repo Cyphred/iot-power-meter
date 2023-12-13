@@ -10,6 +10,7 @@ import PowerMeterReportModel, {
   PowerMeterReportDocument,
 } from "../models/powerMeterReport.js";
 import getRedisClient from "../common/getRedisClient.js";
+import dayjs from "dayjs";
 
 export const getConsumptionReport = async (
   req: Request,
@@ -66,7 +67,7 @@ export const getConsumptionReport = async (
 
     const redisClient = await getRedisClient();
     const wattageRightNowString = await redisClient.get(
-      `wattageNow:${meter._id}`
+      `currentNow:${meter._id}`
     );
     await redisClient.quit();
     const wattageRightNow = JSON.parse(wattageRightNowString) as {
@@ -93,37 +94,48 @@ export const getConsumptionReport = async (
 };
 
 const getDailyAverage = async (reports: PowerMeterReportDocument[]) => {
-  const result: { averageConsumption: number; date: Date }[] =
-    await PowerMeterReportModel.aggregate([
-      {
-        $group: {
-          _id: {
-            year: { $year: "$reportStart" },
-            month: { $month: "$reportStart" },
-            day: { $dayOfMonth: "$reportStart" },
-          },
-          averageConsumption: { $avg: "$consumption" },
-        },
-      },
-      {
-        $project: {
-          _id: 0,
-          date: {
-            $dateFromParts: {
-              year: "$_id.year",
-              month: "$_id.month",
-              day: "$_id.day",
-            },
-          },
-          averageConsumption: 1,
-        },
-      },
-      {
-        $sort: { date: 1 },
-      },
-    ]);
+  // Make a local copy of reports
+  const _reports = [...reports];
 
-  if (!result.length) return;
+  // Sort by timestamps
+  _reports.sort((a, b) => a.reportStart.getTime() - b.reportStart.getTime());
 
-  return result[0].averageConsumption;
+  console.log("sorted reports", _reports.length);
+
+  interface DailyConsumption {
+    day: Date;
+    milliseconds: number;
+    cumulativeConsumption: number;
+  }
+
+  const days: DailyConsumption[] = [];
+
+  for (const report of _reports) {
+    const date = report.reportStart;
+
+    const existing = days.find((day) => dayjs(day.day).isSame(date, "day"));
+    if (!existing) {
+      days.push({
+        day: date,
+        cumulativeConsumption: report.consumption,
+        milliseconds: report.reportEnd.getTime() - report.reportStart.getTime(),
+      });
+    } else {
+      existing.cumulativeConsumption += report.consumption;
+      existing.milliseconds +=
+        report.reportEnd.getTime() - report.reportStart.getTime();
+    }
+  }
+
+  console.log("days", days);
+
+  const averageData = { cumulative: 0, count: 0, average: 0 };
+
+  for (const day of days) {
+    averageData.cumulative += day.cumulativeConsumption; // Convert it into daily consumption (24 hours)
+    averageData.count += 1;
+    averageData.average = averageData.cumulative / averageData.count;
+  }
+
+  return averageData.average;
 };
