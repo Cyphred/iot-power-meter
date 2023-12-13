@@ -1,43 +1,27 @@
 import { PayloadAction, createSlice } from "@reduxjs/toolkit";
+import IConsumptionReport from "../types/ConsumptionReport";
 
 interface StatsState {
-  currentConsumption: number;
-  currentLoad: number;
-  averageLoad: number;
-  estimatedRate: number;
-  estimatedBill: number;
+  consumption: IConsumptionReport | null;
 }
 
 const initialState: StatsState = {
-  currentLoad: 0,
-  averageLoad: 0,
-  currentConsumption: 0,
-  estimatedBill: 0,
-  estimatedRate: 0,
+  consumption: null,
 };
 
 export const statsSlice = createSlice({
   name: "stats",
   initialState,
   reducers: {
-    setStats: (state, action: PayloadAction<StatsState>) => {
-      const {
-        currentLoad,
-        averageLoad,
-        currentConsumption,
-        estimatedBill,
-        estimatedRate,
-      } = action.payload;
-
-      state.currentConsumption = currentConsumption;
-      state.currentLoad = currentLoad;
-      state.averageLoad = averageLoad;
-      state.estimatedBill = estimatedBill;
-      state.estimatedRate = estimatedRate;
+    setConsumption: (
+      state,
+      action: PayloadAction<IConsumptionReport | null>
+    ) => {
+      state.consumption = action.payload;
     },
   },
 });
 
-export const { setStats } = statsSlice.actions;
+export const { setConsumption } = statsSlice.actions;
 
 export default statsSlice.reducer;
