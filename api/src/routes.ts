@@ -21,7 +21,13 @@ const router = Router();
 // Routes that do not require authentication
 router.post("/login", login);
 router.post("/register/consumer", createConsumer);
-router.post("/register/employee", requireAuth, requireEmployee, createEmployee);
+
+// In production, make sure only employees can create other employee accounts
+// router.post("/register/employee",requireAuth,requireEmployee, createEmployee);
+//
+// For now, temporarily use an open employee registration for demo purposes
+router.post("/register/employee", createEmployee);
+
 router.post("/meter/get-token", generatePowerMeterToken);
 
 // Routes that can only be accessed by power meters
