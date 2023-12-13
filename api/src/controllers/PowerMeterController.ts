@@ -100,19 +100,34 @@ export async function createPowerMeterReport(
 
 export const ping = async (req: Request, res: Response, next: NextFunction) => {
   try {
-    const { wattageNow } = req.body;
+    const { wattageNow }: { wattageNow: number } = req.body;
+
+    const timeNow = new Date();
+
+    const cachedWattage = {
+      value: wattageNow,
+      timestamp: timeNow,
+    };
 
     const redisClient = await getRedisClient();
-    await redisClient.set(`wattageNow:${req.meter._id}`, wattageNow);
+    await redisClient.set(
+      `wattageNow:${req.meter._id}`,
+      JSON.stringify(cachedWattage)
+    );
     await redisClient.quit();
 
     // Update when the meter was last seen
-    await PowerMeterModel.findOneAndUpdate(
+    const meter = await PowerMeterModel.findOneAndUpdate(
       { _id: req.meter._id },
-      { lastSeen: new Date() }
+      { lastSeen: timeNow },
+      { new: true }
     );
 
-    return genericOkResponse(res, undefined);
+    const payload = {
+      subscriberDisconnect: !meter.active,
+    };
+
+    return genericOkResponse(res, payload, "Ping acknowledged");
   } catch (err) {
     next(err);
   }
