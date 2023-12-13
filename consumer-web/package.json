@@ -1,5 +1,5 @@
 {
-  "name": "iot-power-company-web",
+  "name": "iot-power-company-consumer-web",
   "private": true,
   "version": "0.0.0",
   "type": "module",
