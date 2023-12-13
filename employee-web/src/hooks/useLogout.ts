@@ -1,6 +1,6 @@
 import { useNavigate } from "react-router-dom";
-import { setToken, setUser } from "../src/redux/auth";
-import { useAppDispatch } from "../src/redux/hooks";
+import { setToken, setUser } from "../redux/auth";
+import { useAppDispatch } from "../redux/hooks";
 
 export function useLogout() {
   const dispatch = useAppDispatch();

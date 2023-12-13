@@ -1,8 +1,8 @@
 import useRequest from "./useRequest";
-import { useAppDispatch } from "../src/redux/hooks";
-import { setToken, setUser } from "../src/redux/auth";
-import IEmployee from "../src/types/Employee";
-import IMeter from "../src/types/Meter";
+import { useAppDispatch } from "../redux/hooks";
+import { setToken, setUser } from "../redux/auth";
+import IEmployee from "../types/Employee";
+import IMeter from "../types/Meter";
 
 export default function useLogin() {
   const { post, isLoading, apiError, serverError } = useRequest();

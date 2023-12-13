@@ -1,10 +1,10 @@
 import React from "react";
 import { useState } from "react";
-import IApiError from "../src/types/ApiError";
+import IApiError from "../types/ApiError";
 import axios, { AxiosResponse } from "axios";
-import IApiResponse from "../src/types/ApiResponse";
-import IServerError from "../src/types/ServerError";
-import { useAppSelector } from "../src/redux/hooks";
+import IApiResponse from "../types/ApiResponse";
+import IServerError from "../types/ServerError";
+import { useAppSelector } from "../redux/hooks";
 
 export default function useRequest() {
   const [isLoading, setIsLoading] = useState(false);
