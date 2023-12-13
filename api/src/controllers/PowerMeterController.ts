@@ -10,6 +10,7 @@ import PowerMeterReportModel, {
 } from "../models/powerMeterReport.js";
 import IConsumptionFrame from "../types/ConsumptionFrame.js";
 import { Types } from "mongoose";
+import getRedisClient from "../common/getRedisClient.js";
 
 /**
  * Generates a token for validating data coming from a power meter.
@@ -99,6 +100,12 @@ export async function createPowerMeterReport(
 
 export const ping = async (req: Request, res: Response, next: NextFunction) => {
   try {
+    const { wattageNow } = req.body;
+
+    const redisClient = await getRedisClient();
+    await redisClient.set(`wattageNow:${req.meter._id}`, wattageNow);
+    await redisClient.quit();
+
     // Update when the meter was last seen
     await PowerMeterModel.findOneAndUpdate(
       { _id: req.meter._id },
