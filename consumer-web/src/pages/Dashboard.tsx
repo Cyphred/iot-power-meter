@@ -9,17 +9,15 @@ import BreakdownTable from "../components/BreakdownTable";
 dayjs.extend(relativeTime);
 
 const Dashboard = () => {
-  const { token, user, consumption, meter, rate, rateBreakdown } =
-    useAppSelector((state) => {
-      return {
-        token: state.auth.token,
-        user: state.auth.user,
-        meter: state.meter.meter,
-        consumption: state.stats.consumption?.consumption,
-        rate: state.stats.consumption?.ratePerKwh,
-        rateBreakdown: state.stats.consumption?.rateBreakdown,
-      };
-    });
+  const { token, user, consumption, meter, rate } = useAppSelector((state) => {
+    return {
+      token: state.auth.token,
+      user: state.auth.user,
+      meter: state.meter.meter,
+      consumption: state.stats.consumption?.consumption,
+      rate: state.stats.consumption?.ratePerKwh,
+    };
+  });
   const navigate = useNavigate();
   const { getConsumptionReport, isLoading } = useReports();
   const [lastPulledStats, setLastPulledStats]: [
