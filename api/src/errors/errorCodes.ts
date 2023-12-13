@@ -56,6 +56,14 @@ export class ErrorCode {
     "IOTPC0014",
     "Bill does not exist"
   );
+  static readonly CUTOFF_NOT_FOUND = new ErrorCode(
+    "IOTPC0015",
+    "Cutoff data does not exist"
+  );
+  static readonly RATE_NOT_FOUND = new ErrorCode(
+    "IOTPC0016",
+    "Rate data does not exist"
+  );
 
   //to add, just increment the error code
 
