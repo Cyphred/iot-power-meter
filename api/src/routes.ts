@@ -9,7 +9,11 @@ import requireMeter from "./middleware/requireMeter.js";
 import { login } from "./controllers/loginController.js";
 import { getBill, getPartialBilling } from "./controllers/billingController.js";
 import { requireAuth } from "./middleware/requireAuth.js";
-import { createConsumer } from "./controllers/consumerController.js";
+import {
+  createConsumer,
+  getConsumerById,
+  getConsumers,
+} from "./controllers/consumerController.js";
 import { getConsumptionReport } from "./controllers/reportController.js";
 import { createCutoff } from "./controllers/cutoffController.js";
 import requireEmployee from "./middleware/requireEmployee.js";
@@ -43,6 +47,8 @@ router.get("/reports/consumption/:consumerId", getConsumptionReport);
 
 router.post("/cutoffs", requireEmployee, createCutoff);
 router.post("/rates", requireEmployee, createRate);
+router.get("/consumers", requireEmployee, getConsumers);
+router.get("/consumers/:consumerId", requireEmployee, getConsumerById);
 
 // Do not put routes or other middleware beyond this global handler
 router.use(globalErrorHandler);
