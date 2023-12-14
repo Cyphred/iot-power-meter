@@ -21,6 +21,10 @@ export default function useLogin() {
       console.error(apiError);
       console.error(serverError);
       return;
+    } else if (apiError || serverError) {
+      if (apiError) console.error(apiError);
+      if (serverError) console.error(serverError);
+      return;
     }
 
     const body = response.body as {

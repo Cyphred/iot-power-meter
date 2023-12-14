@@ -18,10 +18,11 @@ export default () => {
     if (!response) {
       console.error(apiError);
       console.error(serverError);
-      return false;
-    } else if (response.errorCode) {
-      console.error(response);
-      return false;
+      return;
+    } else if (apiError || serverError) {
+      if (apiError) console.error(apiError);
+      if (serverError) console.error(serverError);
+      return;
     }
 
     return true;
