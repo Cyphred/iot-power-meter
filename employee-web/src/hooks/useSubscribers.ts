@@ -1,6 +1,10 @@
 import IConsumer from "../types/Consumer";
 import IMeter from "../types/Meter";
 import useRequest from "./useRequest";
+export interface IConsumerListResponseItem {
+  consumer: IConsumer;
+  meter: IMeter | null | undefined;
+}
 
 export default () => {
   const { isLoading, apiError, serverError, authorizedGet } = useRequest();
@@ -22,12 +26,7 @@ export default () => {
       return;
     }
 
-    interface ConsumerListResponseItem {
-      consumer: IConsumer;
-      meter: IMeter | null | undefined;
-    }
-
-    const parsed = response.body as { consumers: ConsumerListResponseItem[] };
+    const parsed = response.body as { consumers: IConsumerListResponseItem[] };
 
     return parsed.consumers;
   };
