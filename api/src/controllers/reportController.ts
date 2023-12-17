@@ -75,6 +75,10 @@ export const getConsumptionReport = async (
       timestamp: Date;
     };
 
+    wattageRightNow.value = parseFloat(
+      (wattageRightNow.value / 1000).toFixed(2)
+    );
+
     const payload = {
       lastCutoff: lastCutoff ? lastCutoff.cutoffDate : undefined,
       meter,

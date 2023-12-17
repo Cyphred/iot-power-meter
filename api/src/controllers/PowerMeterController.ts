@@ -11,6 +11,9 @@ import PowerMeterReportModel, {
 import IConsumptionFrame from "../types/ConsumptionFrame.js";
 import { Types } from "mongoose";
 import getRedisClient from "../common/getRedisClient.js";
+import ConsumerModel from "../models/consumer.js";
+import CutoffModel from "../models/cutoff.js";
+import RateModel from "../models/rate.js";
 
 /**
  * Generates a token for validating data coming from a power meter.
@@ -65,11 +68,7 @@ export async function createPowerMeterReport(
     // Extract the data sent by the meter
     const reports = req.body.reports as IConsumptionFrame[];
 
-    console.log(req.body.reports);
-
     const formattedReports: PowerMeterReport[] = [];
-
-    console.log("meter id", req.meter._id);
 
     for (const r of reports) {
       const newReport: PowerMeterReport = {
@@ -103,21 +102,31 @@ export const ping = async (req: Request, res: Response, next: NextFunction) => {
     const {
       currentNow,
       sensorError,
-    }: { currentNow: number; sensorError: boolean } = req.body;
+      watthourNow,
+    }: { currentNow: number; sensorError: boolean; watthourNow: number } =
+      req.body;
 
     const timeNow = new Date();
+
+    console.log("ping", req.body);
 
     const cachedCurrent = {
       value: currentNow,
       timestamp: timeNow,
     };
 
+    await PowerMeterReportModel.create({
+      reportStart: timeNow,
+      reportEnd: timeNow,
+      consumption: watthourNow,
+      meter: req.meter._id,
+    });
+
     const redisClient = await getRedisClient();
     await redisClient.set(
       `currentNow:${req.meter._id}`,
       JSON.stringify(cachedCurrent)
     );
-    await redisClient.quit();
 
     // Update when the meter was last seen
     const meter = await PowerMeterModel.findOneAndUpdate(
@@ -125,9 +134,52 @@ export const ping = async (req: Request, res: Response, next: NextFunction) => {
       { lastSeen: timeNow },
       { new: true }
     );
+    if (!meter) throw new ApiError(ErrorCode.METER_NOT_FOUND);
+
+    const consumer = await ConsumerModel.find({ _id: meter.consumer });
+    if (!consumer) throw new ApiError(ErrorCode.CONSUMER_NOT_FOUND);
+
+    const dateToday = new Date();
+
+    const lastCutoff = await CutoffModel.findOne({
+      cutoffDate: { $lt: dateToday },
+    })
+      .sort({ cutoffDate: -1 })
+      .limit(1);
+    if (!lastCutoff) throw new ApiError(ErrorCode.CUTOFF_NOT_FOUND);
+
+    const rate = await RateModel.findOne({ _id: lastCutoff.rate });
+    if (!rate) throw new ApiError(ErrorCode.RATE_NOT_FOUND);
+
+    // Get all reports that are between the last cutoff and today
+    const reports = await PowerMeterReportModel.find({
+      meter: meter._id,
+      /*
+      reportStart: { $gte: lastCutoff.cutoffDate },
+      reportEnd: { $lte: dateToday },
+      */
+    }).sort({ reportStart: 1 });
+
+    let consumptionSinceCutoff: number = 0;
+    let millisecondsSinceCutoff: number = 0;
+    for (const report of reports) {
+      // Accumulate consumption values
+      consumptionSinceCutoff += report.consumption;
+
+      // Accumultae time values
+      millisecondsSinceCutoff +=
+        report.reportEnd.getTime() - report.reportStart.getTime();
+    }
+
+    // Convert the watthours since cutoff
+    const whSinceCutoff =
+      (consumptionSinceCutoff * millisecondsSinceCutoff) / 3600000;
+
+    await redisClient.quit();
 
     const payload = {
       subscriberDisconnect: !meter.active,
+      kwhSinceCutoff: parseFloat((whSinceCutoff / 1000).toFixed(4)),
     };
 
     return genericOkResponse(res, payload, "Ping acknowledged");

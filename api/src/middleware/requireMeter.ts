@@ -22,6 +22,8 @@ export default async function requireMeter(
     // Grab authorization from headers
     const authorization: string = req.headers.authorization;
 
+    console.log("auth", authorization);
+
     // Reject if no auth provided
     if (!authorization) throw missingAuthenticationTokenError;
 
