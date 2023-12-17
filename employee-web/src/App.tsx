@@ -6,6 +6,7 @@ import Layout from "./pages/Layout";
 import Signup from "./pages/Signup";
 import Subscribers from "./pages/Subscribers";
 import Rates from "./pages/Rates";
+import SubscriberFull from "./pages/SubscriberFull";
 
 function App() {
   return (
@@ -16,7 +17,10 @@ function App() {
             <Route path="/login" element={<Login />} />
             <Route path="/signup" element={<Signup />} />
             <Route path="/" element={<Layout />}>
-              <Route path="subscribers" element={<Subscribers />} />
+              <Route path="subscribers">
+                <Route path="" element={<Subscribers />} />
+                <Route path=":subscriberId" element={<SubscriberFull />} />
+              </Route>
               <Route path="rates" element={<Rates />} />
             </Route>
           </Routes>
