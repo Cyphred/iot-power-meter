@@ -38,7 +38,6 @@ router.post("/meter/get-token", generatePowerMeterToken);
 // Routes that can only be accessed by power meters
 router.post("/meter/reports", requireMeter, createPowerMeterReport);
 router.post("/meter/ping", requireMeter, ping);
-router.put("/meter/:meterId/switch", requireMeter, switchMeter);
 
 // Routes beyond this point require authentication
 router.use(requireAuth);
@@ -51,6 +50,8 @@ router.post("/cutoffs", requireEmployee, createCutoff);
 router.post("/rates", requireEmployee, createRate);
 router.get("/consumers", requireEmployee, getConsumers);
 router.get("/consumers/:consumerId", requireEmployee, getConsumerById);
+
+router.put("/meter/:meterId/switch", requireEmployee, switchMeter);
 
 // Do not put routes or other middleware beyond this global handler
 router.use(globalErrorHandler);
