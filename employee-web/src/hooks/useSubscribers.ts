@@ -31,5 +31,33 @@ export default () => {
     return parsed.consumers;
   };
 
-  return { isLoading, apiError, serverError, getSubscribers };
+  const getSubscriberById = async (subscriberId: string) => {
+    const response = await authorizedGet(
+      `${import.meta.env.VITE_API_URI}/consumers/${subscriberId}`
+    );
+
+    if (!response) {
+      console.error(apiError);
+      console.error(serverError);
+      return;
+    }
+
+    if (apiError || serverError) {
+      if (apiError) console.error(apiError);
+      if (serverError) console.error(serverError);
+      return;
+    }
+
+    const parsed = response.body as { consumer: IConsumer };
+
+    return parsed.consumer;
+  };
+
+  return {
+    isLoading,
+    apiError,
+    serverError,
+    getSubscribers,
+    getSubscriberById,
+  };
 };
