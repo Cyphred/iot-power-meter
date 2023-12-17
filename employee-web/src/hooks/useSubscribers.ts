@@ -48,9 +48,9 @@ export default () => {
       return;
     }
 
-    const parsed = response.body as { consumer: IConsumer };
+    const parsed = response.body as { consumer: IConsumer; meter: IMeter };
 
-    return parsed.consumer;
+    return parsed;
   };
 
   return {
