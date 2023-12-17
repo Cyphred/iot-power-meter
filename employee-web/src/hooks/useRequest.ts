@@ -4,7 +4,6 @@ import IApiError from "../types/ApiError";
 import axios, { AxiosResponse } from "axios";
 import IApiResponse from "../types/ApiResponse";
 import IServerError from "../types/ServerError";
-import { useAppSelector } from "../redux/hooks";
 
 export default function useRequest() {
   const [isLoading, setIsLoading] = useState(false);
@@ -17,7 +16,7 @@ export default function useRequest() {
     React.Dispatch<React.SetStateAction<IServerError | undefined>>
   ] = useState();
 
-  const { token } = useAppSelector((state) => state.auth);
+  const token = localStorage.getItem("userToken");
 
   // Determines if postman mock mode is enabled
   const isPostmanMockMode =
