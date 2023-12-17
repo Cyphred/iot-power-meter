@@ -135,3 +135,26 @@ export const ping = async (req: Request, res: Response, next: NextFunction) => {
     next(err);
   }
 };
+
+export const switchMeter = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  try {
+    const { meterId } = req.params;
+    const { state }: { state: boolean } = req.body;
+
+    const meter = await PowerMeterModel.findOneAndUpdate(
+      { _id: meterId },
+      { active: state },
+      { new: true }
+    );
+
+    if (!meter) throw new ApiError(ErrorCode.METER_NOT_FOUND);
+
+    return genericOkResponse(res, { meter });
+  } catch (err) {
+    next(err);
+  }
+};
