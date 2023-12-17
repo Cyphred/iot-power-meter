@@ -7,6 +7,7 @@ import Signup from "./pages/Signup";
 import Subscribers from "./pages/Subscribers";
 import Rates from "./pages/Rates";
 import SubscriberFull from "./pages/SubscriberFull";
+import PrivateRoute from "./components/PrivateRoute";
 
 function App() {
   return (
@@ -16,12 +17,14 @@ function App() {
           <Routes>
             <Route path="/login" element={<Login />} />
             <Route path="/signup" element={<Signup />} />
-            <Route path="/" element={<Layout />}>
-              <Route path="subscribers">
-                <Route path="" element={<Subscribers />} />
-                <Route path=":subscriberId" element={<SubscriberFull />} />
+            <Route path="/" element={<PrivateRoute />}>
+              <Route path="/" element={<Layout />}>
+                <Route path="subscribers">
+                  <Route path="" element={<Subscribers />} />
+                  <Route path=":subscriberId" element={<SubscriberFull />} />
+                </Route>
+                <Route path="rates" element={<Rates />} />
               </Route>
-              <Route path="rates" element={<Rates />} />
             </Route>
           </Routes>
         </BrowserRouter>
