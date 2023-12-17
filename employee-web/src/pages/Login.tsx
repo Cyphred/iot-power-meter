@@ -1,6 +1,5 @@
 import { Card, Flex, Typography, Button, Form, Input, Alert } from "antd";
 import useLogin from "../hooks/useLogin";
-import { useAppSelector } from "../redux/hooks";
 import { useEffect } from "react";
 import { useNavigate, useSearchParams } from "react-router-dom";
 
@@ -10,15 +9,18 @@ type FieldType = {
 };
 
 const Login = () => {
-  const { token, user } = useAppSelector((state) => state.auth);
   const { login, isLoading, apiError, serverError } = useLogin();
-  const [searchParams, setSearchParams] = useSearchParams();
+  const [searchParams] = useSearchParams();
   const navigate = useNavigate();
 
   const onFinish = async ({ email, password }: FieldType) => {
     // Reject if email or password was not provided
     if (!email || !password) return;
     await login(email, password);
+
+    const user = localStorage.getItem("user");
+    const token = localStorage.getItem("userToken");
+    if (user && token) navigate("/subscribers");
   };
 
   const onFinishFailed = (errorInfo: unknown) => {
@@ -26,8 +28,10 @@ const Login = () => {
   };
 
   useEffect(() => {
+    const user = localStorage.getItem("user");
+    const token = localStorage.getItem("userToken");
     if (user && token) navigate("/subscribers");
-  }, [token, user]);
+  }, []);
 
   return (
     <Flex vertical style={{ height: "100vh" }} justify="center" align="center">

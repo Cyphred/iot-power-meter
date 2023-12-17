@@ -1,15 +1,12 @@
 import { Layout as AntLayout, Button, Flex, Typography, theme } from "antd";
 import { Link, Outlet } from "react-router-dom";
 import { useLogout } from "../hooks/useLogout";
-import { useAppSelector } from "../redux/hooks";
+import Employee from "../types/Employee";
 
 const { Header, Content } = AntLayout;
 
 const Layout = () => {
   const { logout } = useLogout();
-  const { user } = useAppSelector((state) => {
-    return { user: state.auth.user };
-  });
 
   const handleLogout = () => {
     logout();
@@ -18,6 +15,8 @@ const Layout = () => {
   const {
     token: { colorBgContainer },
   } = theme.useToken();
+
+  const user = JSON.parse(localStorage.getItem("user")) as Employee;
 
   return (
     <AntLayout className="layout" style={{ width: "100vw", height: "100vh" }}>

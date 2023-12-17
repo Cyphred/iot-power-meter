@@ -1,12 +1,9 @@
 import useRequest from "./useRequest";
-import { useAppDispatch } from "../redux/hooks";
-import { setToken, setUser } from "../redux/auth";
 import IEmployee from "../types/Employee";
 import IMeter from "../types/Meter";
 
 export default function useLogin() {
   const { post, isLoading, apiError, serverError } = useRequest();
-  const dispatch = useAppDispatch();
 
   async function login(email: string, password: string) {
     const response = await post(
@@ -34,8 +31,7 @@ export default function useLogin() {
     };
 
     localStorage.setItem("userToken", body.token);
-    dispatch(setToken(body.token));
-    dispatch(setUser(body.employee));
+    localStorage.setItem("user", JSON.stringify(body.employee));
   }
 
   return { isLoading, apiError, serverError, login };
