@@ -1,30 +1,14 @@
-import { Button, Card, Flex, Table } from "antd";
-import { useAppSelector } from "../redux/hooks";
+import { Button, Flex, Table, Typography } from "antd";
 import dayjs from "dayjs";
 import relativeTime from "dayjs/plugin/relativeTime";
 import { useEffect, useState } from "react";
-import { useNavigate, useSubmit } from "react-router-dom";
-import { Header } from "antd/es/layout/layout";
+import { Link } from "react-router-dom";
 import useSubscribers, {
   IConsumerListResponseItem,
 } from "../hooks/useSubscribers";
 dayjs.extend(relativeTime);
 
 const Subscribers = () => {
-  const navigate = useNavigate();
-  const { token, user } = useAppSelector((state) => {
-    return {
-      user: state.auth.user,
-      token: state.auth.token,
-    };
-  });
-
-  useEffect(() => {
-    if (!token || !user) navigate("/login");
-  }, [token, user]);
-
-  if (!user) return null;
-
   return (
     <Flex vertical style={{ padding: 16 }}>
       <SubscriberTable />
@@ -67,11 +51,6 @@ const SubscriberTable = () => {
       dataIndex: "address",
       key: "address",
     },
-    {
-      title: "Actions",
-      dataIndex: "actions",
-      key: "actions",
-    },
   ];
   return (
     <>
@@ -81,7 +60,31 @@ const SubscriberTable = () => {
             Reload
           </Button>
         </Flex>
-        <Table columns={columns} bordered />
+        <Table
+          columns={columns}
+          bordered
+          dataSource={subscribers.map((subscriber) => {
+            return {
+              key: subscriber.consumer._id,
+              name: (
+                <Link
+                  to={`/subscribers/${subscriber.consumer._id}`}
+                  target="_blank"
+                >
+                  <Typography.Link>
+                    {subscriber.consumer.lastName},{" "}
+                    {subscriber.consumer.firstName}
+                    {subscriber.consumer.middleName ?? ""}
+                  </Typography.Link>
+                </Link>
+              ),
+              meter: subscriber.meter?._id ?? (
+                <Typography.Text type="secondary">No meter</Typography.Text>
+              ),
+              address: `${subscriber.consumer.streetAddress}, ${subscriber.consumer.barangay}, ${subscriber.consumer.city}`,
+            };
+          })}
+        />
       </Flex>
     </>
   );
