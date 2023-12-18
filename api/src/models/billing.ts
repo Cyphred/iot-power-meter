@@ -13,6 +13,7 @@ interface IBilling {
   breakdown: IBillingBreakdown[];
   consumer: Types.ObjectId;
   dueDate: Date;
+  disconnectionDate: Date;
 }
 
 export interface IBillingDocument extends IBilling, Document {}
@@ -56,6 +57,10 @@ const BillingSchema: Schema<IBillingDocument> = new Schema<IBillingDocument>(
       required: true,
     },
     dueDate: {
+      type: Date,
+      required: true,
+    },
+    disconnectionDate: {
       type: Date,
       required: true,
     },
