@@ -12,6 +12,7 @@ import {
   generateBillsForAll,
   getBill,
   getPartialBilling,
+  getPendingBill,
 } from "./controllers/billingController.js";
 import { requireAuth } from "./middleware/requireAuth.js";
 import {
@@ -46,7 +47,8 @@ router.post("/meter/ping", requireMeter, ping);
 // Routes beyond this point require authentication
 router.use(requireAuth);
 
-router.get("/billing", getBill);
+router.get("/billing/:consumerId", getBill);
+router.get("/billing/:consumerId/pending", getPendingBill);
 router.get("/billing/partial", getPartialBilling);
 router.post("/billing/generate-for-all", requireEmployee, generateBillsForAll);
 router.get("/reports/consumption/:consumerId", getConsumptionReport);

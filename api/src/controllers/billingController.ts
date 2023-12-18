@@ -119,6 +119,28 @@ export const getBill = async (
   }
 };
 
+export const getPendingBill = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  try {
+    const { consumerId } = req.params;
+
+    const consumer = await ConsumerModel.findOne({
+      _id: consumerId,
+    });
+
+    if (!consumer) throw new ApiError(ErrorCode.CONSUMER_NOT_FOUND);
+
+    const bill = await BillingModel.findOne({}).sort({ dueDate: -1 }).limit(1);
+
+    return genericOkResponse(res, { bill: bill ?? null });
+  } catch (err) {
+    next(err);
+  }
+};
+
 export const generateBillsForAll = async (
   req: Request,
   res: Response,
