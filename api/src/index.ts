@@ -24,6 +24,11 @@ app.use((req, res, next) => {
   next();
 });
 
+app.use((req, res, next) => {
+  res.set("Cache-Control", "no-store");
+  next();
+});
+
 // IMPORTANT NOTE
 // Change the origin to the domain during production
 app.use(
