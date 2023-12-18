@@ -178,7 +178,8 @@ const createBill = async (
   lastCutoff: ICutoffDocument,
   newCutoff: ICutoffDocument
 ) => {
-  const dueDate = dayjs(newCutoff.cutoffDate).add(7, "day");
+  const dueDate = dayjs(newCutoff.cutoffDate).add(7, "days");
+  const disconnectionDate = dueDate.add(3, "days");
 
   const bill = await BillingModel.create({
     start: lastCutoff.cutoffDate,
@@ -189,7 +190,8 @@ const createBill = async (
       return { description: item.description, amount: item.amount };
     }),
     consumer: consumer._id,
-    dueDate,
+    dueDate: dueDate,
+    disconnectionDate,
   });
 
   return bill;
