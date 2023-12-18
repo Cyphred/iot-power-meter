@@ -1,11 +1,14 @@
 import { Request, Response, NextFunction } from "express";
-import ConsumerModel from "../models/consumer.js";
+import ConsumerModel, { ConsumerDocument } from "../models/consumer.js";
 import ApiError from "../errors/apiError.js";
 import { ErrorCode } from "../errors/errorCodes.js";
 import PowerMeterModel from "../models/meter.js";
-import BillingModel from "../models/billing.js";
+import BillingModel, { IBillingDocument } from "../models/billing.js";
 import PowerMeterReportModel from "../models/powerMeterReport.js";
 import genericOkResponse from "../common/genericOkResponse.js";
+import CutoffModel, { ICutoffDocument } from "../models/cutoff.js";
+import RateModel, { IRateBreakdown, IRateDocument } from "../models/rate.js";
+import dayjs from "dayjs";
 
 export const getPartialBilling = async (
   req: Request,
@@ -114,4 +117,80 @@ export const getBill = async (
   } catch (err) {
     next(err);
   }
+};
+
+export const generateBillsForAll = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  try {
+    const { breakdown }: { breakdown: IRateBreakdown[] } = req.body;
+    const dateToday = new Date();
+
+    // Create a new rate record
+    let ratePerKwh = 0;
+    for (const item of breakdown) {
+      ratePerKwh += item.amount;
+    }
+    const rate = await RateModel.create({ breakdown, ratePerKwh });
+
+    // Create a new cutoff record
+    const newCutoff = await CutoffModel.create({
+      cutoffDate: dateToday,
+      rate: rate._id,
+    });
+
+    const activeConsumers = await ConsumerModel.find({
+      active: true,
+    });
+
+    // Stop if there are no active consumers
+    if (!activeConsumers.length)
+      return genericOkResponse(
+        res,
+        activeConsumers,
+        "No consumers to generate bills for"
+      );
+
+    // Get the last cutoff
+    const lastCutoff = await CutoffModel.findOne({
+      cutoffDate: { $lt: dateToday },
+    });
+    if (!lastCutoff) throw new ApiError(ErrorCode.CUTOFF_NOT_FOUND);
+
+    const billsCreated: IBillingDocument[] = [];
+
+    for (const consumer of activeConsumers) {
+      const result = await createBill(consumer, rate, lastCutoff, newCutoff);
+      if (result) billsCreated.push(result);
+    }
+
+    return genericOkResponse(res, { billsCreated, rate, cutoff: newCutoff });
+  } catch (err) {
+    next(err);
+  }
+};
+
+const createBill = async (
+  consumer: ConsumerDocument,
+  rate: IRateDocument,
+  lastCutoff: ICutoffDocument,
+  newCutoff: ICutoffDocument
+) => {
+  const dueDate = dayjs(newCutoff.cutoffDate).add(7, "day");
+
+  const bill = await BillingModel.create({
+    start: lastCutoff.cutoffDate,
+    end: newCutoff.cutoffDate,
+    consumption: 0,
+    rate: rate.ratePerKwh,
+    breakdown: rate.breakdown.map((item) => {
+      return { description: item.description, amount: item.amount };
+    }),
+    consumer: consumer._id,
+    dueDate,
+  });
+
+  return bill;
 };

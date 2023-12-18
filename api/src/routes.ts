@@ -8,7 +8,11 @@ import {
 } from "./controllers/PowerMeterController.js";
 import requireMeter from "./middleware/requireMeter.js";
 import { login } from "./controllers/loginController.js";
-import { getBill, getPartialBilling } from "./controllers/billingController.js";
+import {
+  generateBillsForAll,
+  getBill,
+  getPartialBilling,
+} from "./controllers/billingController.js";
 import { requireAuth } from "./middleware/requireAuth.js";
 import {
   createConsumer,
@@ -44,6 +48,7 @@ router.use(requireAuth);
 
 router.get("/billing", getBill);
 router.get("/billing/partial", getPartialBilling);
+router.post("/billing/generate-for-all", requireEmployee, generateBillsForAll);
 router.get("/reports/consumption/:consumerId", getConsumptionReport);
 
 router.post("/cutoffs", requireEmployee, createCutoff);
