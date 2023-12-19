@@ -70,14 +70,19 @@ export const getConsumptionReport = async (
       `currentNow:${meter._id}`
     );
     await redisClient.quit();
-    const wattageRightNow = JSON.parse(wattageRightNowString) as {
-      value: number;
-      timestamp: Date;
-    };
+    let wattageRightNow:
+      | {
+          value: number;
+          timestamp?: Date;
+        }
+      | null
+      | undefined = JSON.parse(wattageRightNowString);
 
-    wattageRightNow.value = parseFloat(
-      (wattageRightNow.value / 1000).toFixed(2)
-    );
+    if (wattageRightNow) {
+      wattageRightNow.value = parseFloat(
+        (wattageRightNow.value / 1000).toFixed(2)
+      );
+    }
 
     const payload = {
       lastCutoff: lastCutoff ? lastCutoff.cutoffDate : undefined,
@@ -85,7 +90,7 @@ export const getConsumptionReport = async (
       consumption: {
         sinceCutoff: whSinceCutoff,
         averageDaily: await getDailyAverage(reports),
-        rightNow: !wattageRightNow ? undefined : wattageRightNow,
+        rightNow: wattageRightNow,
       },
       ratePerKwh: rate.ratePerKwh,
       rateBreakdown: rate.breakdown,
