@@ -121,7 +121,7 @@ const Dashboard = () => {
         </Descriptions.Item>
 
         <Descriptions.Item label="Current Load">
-          {consumption !== undefined ? (
+          {consumption && consumption.rightNow ? (
             dayjs(new Date()).diff(consumption.rightNow.timestamp, "seconds") >=
             30 ? (
               <>No data - meter has been offline for too long.</>
