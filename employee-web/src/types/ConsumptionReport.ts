@@ -8,7 +8,7 @@ export default interface IConsumptionReport {
   consumption: {
     sinceCutoff: number;
     averageDaily: number;
-    rightNow: {
+    rightNow?: {
       value: number;
       timestamp: string;
     };
