@@ -1,7 +1,6 @@
 import { Table } from "antd";
 import type { ColumnsType } from "antd/es/table";
 import { IRateBreakdown } from "../types/ConsumptionReport";
-import { useAppSelector } from "../redux/hooks";
 
 interface DataType extends IRateBreakdown {
   key: string;
@@ -17,7 +16,7 @@ const columns: ColumnsType<DataType> = [
     title: "Amount",
     dataIndex: "amount",
     key: "amount",
-    render: (value: number) => <>Php. {value.toFixed(2)}</>,
+    render: (value: number) => <>Php. {value.toFixed(4)}</>,
   },
 ];
 
