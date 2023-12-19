@@ -9,12 +9,21 @@ import IConsumptionReport from "../types/ConsumptionReport";
 import dayjs from "dayjs";
 import BreakdownTable from "../components/BreakdownTable";
 import useMeter from "../hooks/useMeter";
+import useBilling from "../hooks/useBilling";
+import IBilling from "../types/Billing";
 
 const SubscriberFull = () => {
+  const { getPendingBill, isLoading: isBillLoading } = useBilling();
   const { subscriberId } = useParams();
   const { getSubscriberById } = useSubscribers();
   const { getConsumptionReport } = useReports();
   const { switchMeter, isLoading: isMeterLoading } = useMeter();
+
+  const [bill, setBill]: [
+    IBilling | undefined,
+    React.Dispatch<React.SetStateAction<IBilling | undefined>>
+  ] = useState();
+
   const [subscriber, setSubscriber]: [
     IConsumer | undefined,
     React.Dispatch<React.SetStateAction<IConsumer | undefined>>
@@ -36,8 +45,15 @@ const SubscriberFull = () => {
     if (response && response.consumer) setSubscriber(response.consumer);
     if (response && response.meter) setMeter(response.meter);
 
-    const response2 = await getConsumptionReport(subscriberId);
-    if (response2) setReport(response2);
+    getConsumptionReport(subscriberId)
+      .then((report) => setReport(report))
+      .catch(() => alert("Error getting consumption"));
+    getPendingBill(subscriberId)
+      .then((bill) => {
+        if (bill === null) setBill(undefined);
+        else setBill(bill);
+      })
+      .catch(() => alert("Error getting bill"));
   };
 
   const handleMeterSwitched = async (state: boolean) => {
@@ -113,7 +129,7 @@ const SubscriberFull = () => {
             </Descriptions.Item>
 
             <Descriptions.Item label="Current Load">
-              {report.consumption !== undefined ? (
+              {report.consumption.rightNow ? (
                 dayjs(new Date()).diff(
                   report.consumption.rightNow.timestamp,
                   "seconds"
@@ -155,6 +171,17 @@ const SubscriberFull = () => {
               ratePerKwh={report.ratePerKwh}
               kwhSinceCutoff={report.consumption.sinceCutoff}
             />
+
+            {bill && (
+              <>
+                <Typography.Title level={5}>Pending Bill</Typography.Title>
+                <BreakdownTable
+                  rateBreakdown={bill.breakdown}
+                  ratePerKwh={bill.rate}
+                  kwhSinceCutoff={bill.consumption}
+                />
+              </>
+            )}
           </>
         )}
       </Descriptions>
