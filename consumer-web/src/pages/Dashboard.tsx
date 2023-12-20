@@ -6,6 +6,8 @@ import dayjs from "dayjs";
 import relativeTime from "dayjs/plugin/relativeTime";
 import useReports from "../hooks/useReports";
 import BreakdownTable from "../components/BreakdownTable";
+import useBilling from "../hooks/useBilling";
+import IBilling from "../types/Billing";
 dayjs.extend(relativeTime);
 
 const Dashboard = () => {
@@ -18,6 +20,7 @@ const Dashboard = () => {
       rate: state.stats.consumption?.ratePerKwh,
     };
   });
+  const { getPendingBill } = useBilling();
   const navigate = useNavigate();
   const { getConsumptionReport, isLoading } = useReports();
   const [lastPulledStats, setLastPulledStats]: [
@@ -25,13 +28,27 @@ const Dashboard = () => {
     React.Dispatch<React.SetStateAction<Date | undefined>>
   ] = useState();
 
+  const [bill, setBill]: [
+    IBilling | undefined,
+    React.Dispatch<React.SetStateAction<IBilling | undefined>>
+  ] = useState();
+
   const handleGetConsumptionReport = async () => {
     const result = await getConsumptionReport();
     if (result) setLastPulledStats(new Date());
   };
 
+  const handleGetPendingBill = async () => {
+    if (!user) return;
+
+    const bill = await getPendingBill(user._id);
+    if (!bill) return;
+    setBill(bill.bill ?? undefined);
+  };
+
   useEffect(() => {
     handleGetConsumptionReport();
+    handleGetPendingBill();
   }, []);
 
   useEffect(() => {
@@ -40,6 +57,7 @@ const Dashboard = () => {
 
   const handleReloadStats = () => {
     handleGetConsumptionReport();
+    handleGetPendingBill();
   };
 
   if (!user) return null;
@@ -154,7 +172,34 @@ const Dashboard = () => {
         </Descriptions.Item>
       </Descriptions>
 
-      <BreakdownTable />
+      {bill ? (
+        <Flex gap={8} vertical style={{ padding: 16 }}>
+          <Typography.Title level={4} style={{ margin: 0 }}>
+            Pending Bill
+          </Typography.Title>
+
+          <Typography.Text>
+            Cutoff: {dayjs(bill.end).format("MMM DD, YYYY")}
+          </Typography.Text>
+
+          <Typography.Text>
+            Due date: {dayjs(bill.dueDate).format("MMM DD, YYYY")}
+          </Typography.Text>
+
+          <Typography.Text>
+            Disconnection:{" "}
+            {dayjs(bill.disconnectionDate).format("MMM DD, YYYY")}
+          </Typography.Text>
+
+          <BreakdownTable
+            rateBreakdown={bill.breakdown}
+            ratePerKwh={bill.rate}
+            kwhSinceCutoff={bill.consumption}
+          />
+        </Flex>
+      ) : (
+        "No pending bill"
+      )}
     </>
   );
 };
