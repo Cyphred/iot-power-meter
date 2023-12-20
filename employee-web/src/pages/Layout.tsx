@@ -1,4 +1,11 @@
-import { Layout as AntLayout, Button, Flex, Typography, theme } from "antd";
+import {
+  Layout as AntLayout,
+  Badge,
+  Button,
+  Flex,
+  Typography,
+  theme,
+} from "antd";
 import { Link, Outlet } from "react-router-dom";
 import { useLogout } from "../hooks/useLogout";
 import Employee from "../types/Employee";
@@ -53,6 +60,13 @@ const Layout = () => {
             <Typography.Text>
               Logged in as {user?.firstName} {user?.lastName}
             </Typography.Text>
+
+            <Badge count={1}>
+              <Button onClick={() => alert("Show notification")}>
+                Notifications
+              </Button>
+            </Badge>
+
             <Button onClick={handleLogout}>Log out</Button>
           </Flex>
         </Flex>
