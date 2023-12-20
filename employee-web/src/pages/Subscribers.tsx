@@ -6,6 +6,7 @@ import { Link } from "react-router-dom";
 import useSubscribers, {
   IConsumerListResponseItem,
 } from "../hooks/useSubscribers";
+import useBilling from "../hooks/useBilling";
 dayjs.extend(relativeTime);
 
 const Subscribers = () => {
@@ -21,6 +22,7 @@ const SubscriberTable = () => {
   const [subscribers, setSubscribers] = useState(
     [] as IConsumerListResponseItem[]
   );
+  const { isLoading: isBillsLoading, generateBills } = useBilling();
 
   const handleGetSubscribers = async () => {
     const result = await getSubscribers();
@@ -29,6 +31,12 @@ const SubscriberTable = () => {
 
   const handleReloadSubscribers = () => {
     handleGetSubscribers();
+  };
+
+  const onGenerateBilling = async () => {
+    const result = await generateBills();
+    if (!result) return;
+    alert("Successfully generated billing");
   };
 
   useEffect(() => {
@@ -58,6 +66,10 @@ const SubscriberTable = () => {
         <Flex style={{ width: "100%" }} justify="space-between" align="center">
           <Button type="default" onClick={handleReloadSubscribers}>
             Reload
+          </Button>
+
+          <Button onClick={onGenerateBilling} type="primary">
+            Generate Billing
           </Button>
         </Flex>
         <Table
