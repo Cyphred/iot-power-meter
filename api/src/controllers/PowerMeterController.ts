@@ -119,7 +119,7 @@ export const ping = async (req: Request, res: Response, next: NextFunction) => {
     await PowerMeterReportModel.create({
       reportStart: timeNow,
       reportEnd: timeNow,
-      consumption: watthourNow / 1000,
+      consumption: watthourNow,
       meter: req.meter._id,
     });
 
