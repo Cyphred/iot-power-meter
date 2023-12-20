@@ -111,14 +111,15 @@ export const ping = async (req: Request, res: Response, next: NextFunction) => {
     console.log("ping", req.body);
 
     const cachedCurrent = {
-      value: currentNow,
+      // value: currentNow,
+      value: watthourNow / 220,
       timestamp: timeNow,
     };
 
     await PowerMeterReportModel.create({
       reportStart: timeNow,
       reportEnd: timeNow,
-      consumption: watthourNow,
+      consumption: watthourNow / 1000,
       meter: req.meter._id,
     });
 
