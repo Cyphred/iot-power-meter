@@ -74,7 +74,7 @@ export async function createPowerMeterReport(
       const newReport: PowerMeterReport = {
         reportStart: new Date(r.start.getTime() * 1000),
         reportEnd: new Date(r.end.getTime() * 1000),
-        consumption: r.consumption,
+        consumption: r.consumption / 1000, // Data arrives as watthour
         // FIXME Very hacky, check why this is complaining about
         // being a document
         meter: req.meter._id as unknown as Types.ObjectId,
