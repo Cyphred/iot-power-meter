@@ -114,7 +114,7 @@ const Dashboard = () => {
 
         <Descriptions.Item label="Average Daily Load">
           {consumption ? (
-            <>{consumption.averageDaily.toFixed(4)} KWH</>
+            <>{consumption.averageDaily.toFixed(2)} KWH</>
           ) : (
             <>No data</>
           )}
@@ -126,7 +126,7 @@ const Dashboard = () => {
             30 ? (
               <>No data - meter has been offline for too long.</>
             ) : (
-              <>{consumption.rightNow.value.toFixed(4)} A</>
+              <>{consumption.rightNow.value.toFixed(2)} A</>
             )
           ) : (
             <>No data</>
@@ -135,7 +135,7 @@ const Dashboard = () => {
 
         <Descriptions.Item label="This month's consumption">
           {consumption ? (
-            <> {consumption.sinceCutoff.toFixed(4)} KWH </>
+            <> {consumption.sinceCutoff.toFixed(2)} KWH </>
           ) : (
             <>No data</>
           )}

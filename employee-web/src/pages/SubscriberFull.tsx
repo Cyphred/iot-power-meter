@@ -122,7 +122,7 @@ const SubscriberFull = () => {
 
             <Descriptions.Item label="Average Daily Load">
               {report.consumption ? (
-                <>{report.consumption.averageDaily.toFixed(4)} KWH</>
+                <>{report.consumption.averageDaily.toFixed(2)} KWH</>
               ) : (
                 <>No data</>
               )}
@@ -136,7 +136,7 @@ const SubscriberFull = () => {
                 ) >= 10 ? (
                   <>No data - meter has been offline for too long.</>
                 ) : (
-                  <>{report.consumption.rightNow.value.toFixed(4)} A</>
+                  <>{report.consumption.rightNow.value.toFixed(2)} A</>
                 )
               ) : (
                 <>No data</>
@@ -145,7 +145,7 @@ const SubscriberFull = () => {
 
             <Descriptions.Item label="This month's consumption">
               {report.consumption ? (
-                <> {report.consumption.sinceCutoff.toFixed(4)} KWH </>
+                <> {report.consumption.sinceCutoff.toFixed(2)} KWH </>
               ) : (
                 <>No data</>
               )}
