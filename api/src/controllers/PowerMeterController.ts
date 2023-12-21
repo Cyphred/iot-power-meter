@@ -180,7 +180,9 @@ export const ping = async (req: Request, res: Response, next: NextFunction) => {
       kwhSinceCutoff: parseFloat((whSinceCutoff / 1000).toFixed(4)),
     };
 
-    return genericOkResponse(res, payload, "Ping acknowledged");
+    // return genericOkResponse(res, payload, "Ping acknowledged");
+
+    return res.status(200).json(payload);
   } catch (err) {
     next(err);
   }
