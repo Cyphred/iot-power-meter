@@ -11,6 +11,7 @@ import PowerMeterReportModel, {
 } from "../models/powerMeterReport.js";
 import getRedisClient from "../common/getRedisClient.js";
 import dayjs from "dayjs";
+import BillingModel from "../models/billing.js";
 
 export const getConsumptionReport = async (
   req: Request,
@@ -67,13 +68,10 @@ export const getConsumptionReport = async (
       `currentNow:${meter._id}`
     );
     await redisClient.quit();
-    let wattageRightNow:
-      | {
-          value: number;
-          timestamp?: Date;
-        }
-      | null
-      | undefined = JSON.parse(wattageRightNowString);
+    let wattageRightNow = JSON.parse(wattageRightNowString) as {
+      value: number;
+      timestamp: Date;
+    };
 
     if (wattageRightNow) {
       wattageRightNow.value = parseFloat(
@@ -144,4 +142,22 @@ const getDailyAverage = async (reports: PowerMeterReportDocument[]) => {
   }
 
   return averageData.average;
+};
+
+export const deleteAllConsumptionReports = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  try {
+    await PowerMeterReportModel.deleteMany({});
+    await BillingModel.deleteMany({});
+    return genericOkResponse(
+      res,
+      null,
+      "Consumption reports and bills deleted"
+    );
+  } catch (err) {
+    next(err);
+  }
 };

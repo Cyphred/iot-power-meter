@@ -1,8 +1,11 @@
 import IConsumptionReport from "../types/ConsumptionReport";
+import { useLogout } from "./useLogout";
 import useRequest from "./useRequest";
 
 export default () => {
-  const { isLoading, apiError, serverError, authorizedGet } = useRequest();
+  const { isLoading, apiError, serverError, authorizedGet, authorizedPost } =
+    useRequest();
+  const { logout } = useLogout();
 
   const getConsumptionReport = async (consumerId: string) => {
     const response = await authorizedGet(
@@ -23,5 +26,21 @@ export default () => {
     return report;
   };
 
-  return { isLoading, apiError, serverError, getConsumptionReport };
+  const resetEverything = async () => {
+    const response = await authorizedPost(
+      `${import.meta.env.VITE_API_URI}/reports/consumption`,
+      {}
+    );
+
+    if (response && !response.errorCode) logout();
+    else alert(response?.message);
+  };
+
+  return {
+    isLoading,
+    apiError,
+    serverError,
+    getConsumptionReport,
+    resetEverything,
+  };
 };

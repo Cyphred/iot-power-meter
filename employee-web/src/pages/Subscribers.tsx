@@ -7,6 +7,7 @@ import useSubscribers, {
   IConsumerListResponseItem,
 } from "../hooks/useSubscribers";
 import useBilling from "../hooks/useBilling";
+import useReports from "../hooks/useReports";
 dayjs.extend(relativeTime);
 
 const Subscribers = () => {
@@ -23,6 +24,7 @@ const SubscriberTable = () => {
     [] as IConsumerListResponseItem[]
   );
   const { isLoading: isBillsLoading, generateBills } = useBilling();
+  const { resetEverything } = useReports();
 
   const handleGetSubscribers = async () => {
     const result = await getSubscribers();
@@ -37,6 +39,10 @@ const SubscriberTable = () => {
     const result = await generateBills();
     if (!result) return;
     alert("Successfully generated billing");
+  };
+
+  const handleResetData = async () => {
+    await resetEverything();
   };
 
   useEffect(() => {
@@ -66,6 +72,10 @@ const SubscriberTable = () => {
         <Flex style={{ width: "100%" }} justify="space-between" align="center">
           <Button type="default" onClick={handleReloadSubscribers}>
             Reload
+          </Button>
+
+          <Button danger type="default" onClick={handleResetData}>
+            Reset All Data
           </Button>
 
           <Button onClick={onGenerateBilling} type="primary">

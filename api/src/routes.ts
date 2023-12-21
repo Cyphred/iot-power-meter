@@ -20,7 +20,10 @@ import {
   getConsumerById,
   getConsumers,
 } from "./controllers/consumerController.js";
-import { getConsumptionReport } from "./controllers/reportController.js";
+import {
+  deleteAllConsumptionReports,
+  getConsumptionReport,
+} from "./controllers/reportController.js";
 import { createCutoff } from "./controllers/cutoffController.js";
 import requireEmployee from "./middleware/requireEmployee.js";
 import { createEmployee } from "./controllers/employeeController.js";
@@ -52,6 +55,11 @@ router.get("/billing/:consumerId/pending", getPendingBill);
 router.get("/billing/partial", getPartialBilling);
 router.post("/billing/generate-for-all", requireEmployee, generateBillsForAll);
 router.get("/reports/consumption/:consumerId", getConsumptionReport);
+router.post(
+  "/reports/consumption",
+  requireEmployee,
+  deleteAllConsumptionReports
+);
 
 router.post("/cutoffs", requireEmployee, createCutoff);
 router.post("/rates", requireEmployee, createRate);
