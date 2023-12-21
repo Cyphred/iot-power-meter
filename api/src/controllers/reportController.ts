@@ -44,21 +44,18 @@ export const getConsumptionReport = async (
     // Get all reports that are between the last cutoff and today
     const reports = await PowerMeterReportModel.find({
       meter: meter._id,
-      /*
       reportStart: { $gte: lastCutoff.cutoffDate },
       reportEnd: { $lte: dateToday },
-      */
     }).sort({ reportStart: 1 });
 
     let consumptionSinceCutoff: number = 0;
-    let millisecondsSinceCutoff: number = 0;
+    const millisecondsSinceCutoff: number =
+      reports.slice(-1)[0].reportEnd.getTime() -
+      reports[0].reportStart.getTime();
+
     for (const report of reports) {
       // Accumulate consumption values
       consumptionSinceCutoff += report.consumption;
-
-      // Accumultae time values
-      millisecondsSinceCutoff +=
-        report.reportEnd.getTime() - report.reportStart.getTime();
     }
 
     // Convert the watthours since cutoff

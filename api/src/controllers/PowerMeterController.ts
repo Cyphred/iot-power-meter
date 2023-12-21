@@ -74,7 +74,7 @@ export async function createPowerMeterReport(
       const newReport: PowerMeterReport = {
         reportStart: new Date(r.start.getTime() * 1000),
         reportEnd: new Date(r.end.getTime() * 1000),
-        consumption: r.consumption,
+        consumption: r.consumption / 1000, // Data arrives as watthour
         // FIXME Very hacky, check why this is complaining about
         // being a document
         meter: req.meter._id as unknown as Types.ObjectId,
@@ -111,7 +111,8 @@ export const ping = async (req: Request, res: Response, next: NextFunction) => {
     console.log("ping", req.body);
 
     const cachedCurrent = {
-      value: currentNow,
+      // value: currentNow,
+      value: watthourNow / 220,
       timestamp: timeNow,
     };
 
@@ -154,21 +155,18 @@ export const ping = async (req: Request, res: Response, next: NextFunction) => {
     // Get all reports that are between the last cutoff and today
     const reports = await PowerMeterReportModel.find({
       meter: meter._id,
-      /*
       reportStart: { $gte: lastCutoff.cutoffDate },
       reportEnd: { $lte: dateToday },
-      */
     }).sort({ reportStart: 1 });
 
     let consumptionSinceCutoff: number = 0;
-    let millisecondsSinceCutoff: number = 0;
+    const millisecondsSinceCutoff: number =
+      reports.slice(-1)[0].reportEnd.getTime() -
+      reports[0].reportStart.getTime();
+
     for (const report of reports) {
       // Accumulate consumption values
       consumptionSinceCutoff += report.consumption;
-
-      // Accumultae time values
-      millisecondsSinceCutoff +=
-        report.reportEnd.getTime() - report.reportStart.getTime();
     }
 
     // Convert the watthours since cutoff
@@ -182,7 +180,9 @@ export const ping = async (req: Request, res: Response, next: NextFunction) => {
       kwhSinceCutoff: parseFloat((whSinceCutoff / 1000).toFixed(4)),
     };
 
-    return genericOkResponse(res, payload, "Ping acknowledged");
+    // return genericOkResponse(res, payload, "Ping acknowledged");
+
+    return res.status(200).json(payload);
   } catch (err) {
     next(err);
   }

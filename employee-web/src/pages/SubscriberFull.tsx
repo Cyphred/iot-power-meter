@@ -166,12 +166,6 @@ const SubscriberFull = () => {
               )}
             </Descriptions.Item>
 
-            <BreakdownTable
-              rateBreakdown={report.rateBreakdown}
-              ratePerKwh={report.ratePerKwh}
-              kwhSinceCutoff={report.consumption.sinceCutoff}
-            />
-
             {bill && (
               <>
                 <Typography.Title level={5}>Pending Bill</Typography.Title>

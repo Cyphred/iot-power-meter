@@ -17,7 +17,6 @@ export const requireAuth = async (
   next: NextFunction
 ) => {
   try {
-    console.log(req.headers);
     // Prepare an error to throw in the event of a missing authentication token
     const missingAuthenticationTokenError = new ApiError(
       ErrorCode.MISSING_AUTHENTICATION_TOKEN
