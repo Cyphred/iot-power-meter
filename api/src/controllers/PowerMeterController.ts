@@ -160,9 +160,17 @@ export const ping = async (req: Request, res: Response, next: NextFunction) => {
     }).sort({ reportStart: 1 });
 
     let consumptionSinceCutoff: number = 0;
-    const millisecondsSinceCutoff: number =
-      reports.slice(-1)[0].reportEnd.getTime() -
-      reports[0].reportStart.getTime();
+    let millisecondsSinceCutoff: number = 0;
+
+    if (reports.length > 1) {
+      millisecondsSinceCutoff =
+        reports[reports.length - 1].reportEnd.getTime() -
+        reports[0].reportEnd.getTime();
+    }
+    if (reports.length === 1) {
+      millisecondsSinceCutoff =
+        timeNow.getTime() - reports[0].reportEnd.getTime();
+    }
 
     for (const report of reports) {
       // Accumulate consumption values
